@@ -14,41 +14,156 @@ cordova plugin add admob-plus-cordova --variable APP_ID_ANDROID="ca-app-pub-xxxx
 🧪 Use Google AdMob test IDs during development.
 
 ## 🚀 Plugin Installation
+
+### Basic Configuration
 Clone or download this repository and install locally:
 
 ```bash
 cordova plugin add admob-native-java-help@latest
 ```
 
-## ⚙️ Available Variables
+### ⚙️ Configuration Variables
 
 | Variable | Required | Description |
 | --- | --- | --- |
-| AD_TYPE | [OK] | Ad type: banner, interstitial or banner,interstitial |
-| AD_POSITION | ❌ | top, bottom (default: bottom) |
-| BANNER_AD_UNIT_ID | [OK] (if using banner) | AdMob banner ID |
-| INTERSTITIAL_AD_UNIT_ID | [OK] (if using interstitial) | AdMob interstitial ID |
-| APP_ID | [OK] | App ID provided by AdMob |
+| AD_TYPE | ✅ | Ad type: `banner`, `interstitial` or `banner,interstitial` |
+| AD_POSITION | ❌ | Banner position: `top` or `bottom` (default: `bottom`) |
+| BANNER_AD_UNIT_ID | ✅ (if using banner) | AdMob banner ID |
+| INTERSTITIAL_AD_UNIT_ID | ✅ (if using interstitial) | AdMob interstitial ID |
+| APP_ID | ✅ | App ID provided by AdMob |
 
+### 📋 Installation Examples
 
-## 📄 Usage example with Cordova WebView
-To display interstitial via JavaScript:
-```js
-// Show the ad
-window.AndroidInterstitial.showAd();
-
-// Check if it's loaded
-if (window.AndroidInterstitial.isAdLoaded()) {
-  console.log('Ready to display interstitial ad');
-}
-
-// Register callback when ad is closed
-window.AndroidInterstitial.setOnAdClosedCallback(function () {
-  console.log('Interstitial ad closed!');
-});
+**1. Banner Only (bottom position):**
+```bash
+cordova plugin add admob-native-java-help \
+  --variable AD_TYPE="banner" \
+  --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" \
+  --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
 ```
 
-## 📐 How the plugin works
+**2. Banner Only (top position):**
+```bash
+cordova plugin add admob-native-java-help \
+  --variable AD_TYPE="banner" \
+  --variable AD_POSITION="top" \
+  --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" \
+  --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
+```
+
+**3. Interstitial Only:**
+```bash
+cordova plugin add admob-native-java-help \
+  --variable AD_TYPE="interstitial" \
+  --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-3940256099942544/1033173712" \
+  --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
+```
+
+**4. Banner + Interstitial (complete configuration):**
+```bash
+cordova plugin add admob-native-java-help \
+  --variable AD_TYPE="banner,interstitial" \
+  --variable AD_POSITION="bottom" \
+  --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" \
+  --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-3940256099942544/1033173712" \
+  --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
+```
+
+**5. Using your own production IDs:**
+```bash
+cordova plugin add admob-native-java-help \
+  --variable AD_TYPE="banner,interstitial" \
+  --variable AD_POSITION="top" \
+  --variable BANNER_AD_UNIT_ID="ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY" \
+  --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-XXXXXXXXXXXXXXXX/ZZZZZZZZZZ" \
+  --variable APP_ID="ca-app-pub-XXXXXXXXXXXXXXXX~WWWWWWWWWW"
+```
+
+
+## 📄 Usage Examples in Cordova WebView
+
+### 🎯 Interstitial Ads
+To display interstitial ads via JavaScript:
+
+```js
+// Check if the ad is loaded
+if (window.AndroidInterstitial && window.AndroidInterstitial.isAdLoaded()) {
+  console.log('Interstitial ad ready for display');
+  
+  // Show the ad
+  window.AndroidInterstitial.showAd();
+} else {
+  console.log('Interstitial ad not yet loaded');
+}
+
+// Register callback when the ad is closed
+if (window.AndroidInterstitial) {
+  window.AndroidInterstitial.setOnAdClosedCallback(function () {
+    console.log('Interstitial ad closed!');
+    // Here you can reload the ad or perform other actions
+  });
+}
+```
+
+### 🏷️ Native Banners
+Banners are displayed automatically when configured:
+
+```js
+// Banners appear automatically at the configured position
+// (top or bottom) without needing additional JavaScript code
+
+// Example of checking if the banner is active
+if (typeof window.AndroidInterstitial !== 'undefined') {
+  console.log('Native AdMob plugin is active');
+  console.log('Banner will be displayed automatically');
+}
+```
+
+### 🔄 Complete Integration Example
+```js
+document.addEventListener('deviceready', function() {
+  console.log('Cordova ready - Initializing native AdMob');
+  
+  // Check if the plugin is available
+  if (window.AndroidInterstitial) {
+    console.log('Native AdMob plugin loaded successfully');
+    
+    // Set callback for when the ad is closed
+    window.AndroidInterstitial.setOnAdClosedCallback(function() {
+      console.log('User closed the interstitial ad');
+      // Optional: reload the ad for the next display
+    });
+    
+    // Example: show ad after 5 seconds
+    setTimeout(function() {
+      if (window.AndroidInterstitial.isAdLoaded()) {
+        window.AndroidInterstitial.showAd();
+      }
+    }, 5000);
+  } else {
+    console.log('Native AdMob plugin not found');
+  }
+}, false);
+```
+
+## 🎛️ Settings and Behaviors
+
+### 📍 Banner Positions
+- **`AD_POSITION="top"`**: Fixed banner at the top of the screen, above the WebView
+- **`AD_POSITION="bottom"`** (default): Fixed banner at the bottom, below the WebView
+- **No banner**: When `AD_TYPE` doesn't include "banner"
+
+### 🎯 Ad Types
+- **`AD_TYPE="banner"`**: Only persistent banner at the chosen position
+- **`AD_TYPE="interstitial"`**: Only interstitial ads (full screen)
+- **`AD_TYPE="banner,interstitial"`**: Both types available
+
+### ⚡ Automatic Behavior
+- **Banners**: Load and display automatically when starting the app
+- **Interstitials**: Load automatically, but need to be displayed via JavaScript
+- **Native overlay**: Ads appear over the WebView without affecting the layout
+
+## 📐 How the Plugin Works
 
 1. Automatically locates your MainActivity.java;
 
@@ -76,40 +191,44 @@ cordova run android
 | Interstitial | ca-app-pub-3940256099942544/1033173712 |
 
 ## ⚠️ Important Notes
+
+### 🔧 MainActivity Modifications
 Changes are made to the MainActivity.java generated by Cordova (in `platforms\android\app\src\main\java\com\your_package\app_name\MainActivity.java`). If you remove the Android platform, the injections will be lost.
-If you modify the MainActivity manually, before building the apk it is necessary to run:
+
+### 🔄 Manual Preparation
+If you modify the MainActivity manually, before compiling the APK you need to run:
 ```bash
 cordova prepare android
 ```
 
-Always use test IDs before publishing your app.
+### ✅ Best Practices
+- **Always use test IDs** before publishing your app
+- **Compatible with admob-plus-cordova** - no need to duplicate the SDK
+- **Doesn't overwrite the entire MainActivity** - safe for existing projects
+- **Native overlay** - ads don't interfere with WebView layout
 
-Compatible with projects using admob-plus-cordova, no need to duplicate SDK.
-
-Does not overwrite the entire MainActivity, therefore it's safe for existing projects.
-
-## [FOLDER] Plugin Structure
+## 📁 Plugin Structure
 
 ```bash
 admob-native-java-help/
-├── plugin.xml
-├── package.json
-├── scripts/
-│   ├── pre_install.js
-│   └── after_install.js
-├── src/android/
-│   ├── utils.js
-│   └── blocks/
-│       ├── banner_bottom.java.block
-│       ├── banner_top.java.block
-│       ├── interstitial.java.block
-│       └── js_interface.java.block
-└── README.md
+├── plugin.xml              # Cordova plugin configuration
+├── package.json            # Dependencies and metadata
+├── scripts/                # Installation scripts
+│   ├── pre_install.js      # Runs before installation
+│   └── after_install.js    # Injects code into MainActivity
+├── src/android/            # Android source code
+│   ├── utils.js            # Utilities for injection
+│   └── blocks/             # Java code blocks
+│       ├── banner_bottom.java.block    # Bottom banner
+│       ├── banner_top.java.block       # Top banner
+│       ├── interstitial.java.block     # Interstitial ads
+│       └── js_interface.java.block     # JavaScript interface
+└── README.md               # Documentation
 ```
 
 ## 👨‍💻 Author
-Developed by ON00dev
+Developed by **ON00dev**  
 Contributions, improvements and forks are welcome!
 
 ## 📄 License
-MIT © [Current Year] — You are free to modify, reuse and share.
+[MIT](https://github.com/ON00dev/admob-native-java-help/blob/main/LICENSE) © 2024 — You are free to modify, reuse and share.

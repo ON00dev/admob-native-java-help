@@ -1,6 +1,21 @@
 # Changelog
 
-Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
+All notable changes to this project will be documented in this file.
+
+## [1.0.18] - 2024-12-19
+
+### Changed
+- **DOCUMENTATION**: Complete translation of README.md from Portuguese to English
+- **INTERNATIONALIZATION**: Enhanced accessibility for international developers
+- **STANDARDIZATION**: Unified documentation language for better global compatibility
+- **USER EXPERIENCE**: Improved readability and understanding for English-speaking developers
+
+### Technical Details
+- Translated all sections: installation examples, usage guides, configuration variables
+- Updated code comments and examples to English
+- Maintained all functionality while improving documentation clarity
+- Enhanced plugin structure documentation with detailed descriptions
+- Standardized terminology throughout the documentation
 
 ## [1.0.17] - 2024-12-19
 
