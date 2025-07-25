@@ -170,6 +170,68 @@ cordova run android
 | Banner | ca-app-pub-3940256099942544/6300978111 |
 | Interstitial | ca-app-pub-3940256099942544/1033173712 |
 
+## 🔧 Troubleshooting
+
+### Problem: Variables not being saved correctly
+If you see `undefined` values in the installation log:
+
+1. **Remove the plugin completely:**
+```bash
+cordova plugin remove admob-native-java-help
+```
+
+2. **Clean the project:**
+```bash
+cordova clean android
+```
+
+3. **Reinstall with explicit variables:**
+```bash
+cordova plugin add admob-native-java-help --variable AD_TYPE="banner" --variable AD_POSITION="top" --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
+```
+
+### Problem: Banner not appearing
+If the banner doesn't show up:
+
+1. **Check the MainActivity.java file** at `platforms/android/app/src/main/java/com/yourpackage/MainActivity.java`
+2. **Look for the comment `// ADMOB_NATIVE_PLUGIN`** - this indicates the code was injected
+3. **Verify the Application ID** in `platforms/android/app/src/main/AndroidManifest.xml`
+4. **Rebuild the project:**
+```bash
+cordova build android
+cordova run android
+```
+
+### Problem: Compatibility with admob-plus-cordova
+If you have both plugins installed:
+
+- The plugin automatically detects `admob-plus-cordova`
+- It skips AndroidManifest.xml modifications to avoid conflicts
+- Both plugins work together: `admob-plus-cordova` handles the SDK, `admob-native-java-help` adds native overlay
+- Make sure the Application ID is configured in one of the plugins
+
+### Problem: App crashes on startup
+If the app crashes:
+
+1. **Check if the Application ID is in AndroidManifest.xml:**
+```xml
+<meta-data
+    android:name="com.google.android.gms.ads.APPLICATION_ID"
+    android:value="ca-app-pub-3940256099942544~3347511713" />
+```
+
+2. **Verify AdMob imports in MainActivity.java:**
+```java
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+```
+
+3. **Check the build.gradle dependencies:**
+```gradle
+implementation 'com.google.android.gms:play-services-ads:22.6.0'
+```
+
 ## ⚠️ Important Notes
 
 ### 🔧 MainActivity Modifications

@@ -125,8 +125,17 @@ function loadBlocks(config) {
 function injectIntoAndroidManifest(manifestPath, appId) {
   // Skip manifest modifications if admob-plus-cordova is present
   if (global.skipManifestModifications) {
-    console.log('[OK] Skipping AndroidManifest.xml modifications - admob-plus-cordova handles them');
-    return;
+    console.log('[INFO] admob-plus-cordova detected - checking if Application ID is already configured');
+    
+    // Even with admob-plus-cordova, verify if Application ID is present
+    let content = fs.readFileSync(manifestPath, 'utf8');
+    if (content.includes('com.google.android.gms.ads.APPLICATION_ID')) {
+      console.log('[OK] AdMob Application ID already configured by admob-plus-cordova');
+      return;
+    } else {
+      console.log('[WARNING] Application ID not found - injecting it manually');
+      // Continue with injection
+    }
   }
   
   let content = fs.readFileSync(manifestPath, 'utf8');

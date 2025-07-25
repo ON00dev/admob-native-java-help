@@ -12,6 +12,21 @@ All notable changes to this project will be documented in this file.
 - **DEFAULT CONFIGURATION**: Confirmed automatic setup with test banner bottom configuration
 - **PLUGIN STRUCTURE**: Enhanced documentation with detailed plugin architecture explanation
 
+### Fixed
+- **CRITICAL BUG**: Fixed CLI variables not being saved correctly in userConfig.json
+- **CRITICAL BUG**: Fixed AD_POSITION variable being overridden by default value
+- **CRITICAL BUG**: Fixed undefined bannerId, interstitialId, and appId in installation logs
+- **COMPATIBILITY**: Improved AndroidManifest.xml injection when admob-plus-cordova is present
+- **INSTALLATION**: Enhanced pre_install.js with proper fallback values and debug logging
+- **MANIFEST**: Fixed Application ID injection logic to work with existing plugins
+
+### Added
+- **TROUBLESHOOTING**: Comprehensive troubleshooting section in README.md
+- **DEBUG LOGGING**: Added CLI variables debugging in pre_install.js
+- **FALLBACK VALUES**: Added default test IDs when variables are not provided
+- **COMPATIBILITY CHECK**: Enhanced detection and handling of admob-plus-cordova plugin
+- **ERROR HANDLING**: Improved error messages and installation guidance
+
 ### Technical Details
 - Translated all sections: installation examples, usage guides, configuration variables
 - Updated code comments and examples to English
@@ -23,6 +38,9 @@ All notable changes to this project will be documented in this file.
 - Improved installation instructions with clear step-by-step guidance
 - Removed duplicate Portuguese content from README.md
 - Confirmed plugin.xml default values for automatic test banner configuration
+- Fixed variable processing in pre_install.js to prevent undefined values
+- Enhanced AndroidManifest.xml injection logic for better plugin compatibility
+- Added comprehensive troubleshooting guide with common problems and solutions
 
 ## [1.0.17] - 2024-12-19
 
