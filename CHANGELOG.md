@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 - **INTERNATIONALIZATION**: Enhanced accessibility for international developers
 - **STANDARDIZATION**: Unified documentation language for better global compatibility
 - **USER EXPERIENCE**: Improved readability and understanding for English-speaking developers
+- **DEFAULT CONFIGURATION**: Confirmed automatic setup with test banner bottom configuration
+- **PLUGIN STRUCTURE**: Enhanced documentation with detailed plugin architecture explanation
 
 ### Technical Details
 - Translated all sections: installation examples, usage guides, configuration variables
@@ -16,6 +18,11 @@ All notable changes to this project will be documented in this file.
 - Maintained all functionality while improving documentation clarity
 - Enhanced plugin structure documentation with detailed descriptions
 - Standardized terminology throughout the documentation
+- Documented default configuration behavior for seamless installation
+- Added comprehensive usage examples for different ad types and positions
+- Improved installation instructions with clear step-by-step guidance
+- Removed duplicate Portuguese content from README.md
+- Confirmed plugin.xml default values for automatic test banner configuration
 
 ## [1.0.17] - 2024-12-19
 

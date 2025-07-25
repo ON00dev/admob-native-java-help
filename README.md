@@ -36,47 +36,30 @@ cordova plugin add admob-native-java-help@latest
 
 **1. Banner Only (bottom position):**
 ```bash
-cordova plugin add admob-native-java-help \
-  --variable AD_TYPE="banner" \
-  --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" \
-  --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
+cordova plugin add admob-native-java-help --variable AD_TYPE="banner" --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
 ```
 
 **2. Banner Only (top position):**
 ```bash
-cordova plugin add admob-native-java-help \
-  --variable AD_TYPE="banner" \
-  --variable AD_POSITION="top" \
-  --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" \
-  --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
+cordova plugin add admob-native-java-help --variable AD_TYPE="banner" --variable AD_POSITION="top" --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
 ```
 
 **3. Interstitial Only:**
 ```bash
-cordova plugin add admob-native-java-help \
-  --variable AD_TYPE="interstitial" \
-  --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-3940256099942544/1033173712" \
+cordova plugin add admob-native-java-help
+  --variable AD_TYPE="interstitial"
+  --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-3940256099942544/1033173712"
   --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
 ```
 
 **4. Banner + Interstitial (complete configuration):**
 ```bash
-cordova plugin add admob-native-java-help \
-  --variable AD_TYPE="banner,interstitial" \
-  --variable AD_POSITION="bottom" \
-  --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" \
-  --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-3940256099942544/1033173712" \
-  --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
+cordova plugin add admob-native-java-help --variable AD_TYPE="banner,interstitial" --variable AD_POSITION="bottom" --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-3940256099942544/1033173712" --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
 ```
 
 **5. Using your own production IDs:**
 ```bash
-cordova plugin add admob-native-java-help \
-  --variable AD_TYPE="banner,interstitial" \
-  --variable AD_POSITION="top" \
-  --variable BANNER_AD_UNIT_ID="ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY" \
-  --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-XXXXXXXXXXXXXXXX/ZZZZZZZZZZ" \
-  --variable APP_ID="ca-app-pub-XXXXXXXXXXXXXXXX~WWWWWWWWWW"
+cordova plugin add admob-native-java-help --variable AD_TYPE="banner,interstitial" --variable AD_POSITION="top" --variable BANNER_AD_UNIT_ID="ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY" --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-XXXXXXXXXXXXXXXX/ZZZZZZZZZZ" --variable APP_ID="ca-app-pub-XXXXXXXXXXXXXXXX~WWWWWWWWWW"
 ```
 
 
