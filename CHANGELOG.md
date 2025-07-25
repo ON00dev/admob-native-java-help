@@ -2,6 +2,42 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [1.0.13] - 2024-12-19
+### [OK] Melhorias
+- **Injeção automática de imports**: Plugin agora injeta automaticamente os imports necessários do AdMob no MainActivity.java
+- **Imports incluídos automaticamente**:
+  - `import android.widget.LinearLayout;`
+  - `import com.google.android.gms.ads.AdRequest;`
+  - `import com.google.android.gms.ads.AdSize;`
+  - `import com.google.android.gms.ads.AdView;`
+- **Processo totalmente automatizado**: Não é mais necessário adicionar imports manualmente
+
+### [OK] Arquivos atualizados
+- `src/android/utils.js`: Adicionada função `injectImports()` para injeção automática
+- `package.json`: Versão atualizada para 1.0.13
+- `plugin.xml`: Versão atualizada para 1.0.13
+
+---
+
+## [1.0.12] - 2024-12-19
+
+### 🔧 Dependency Management
+- **Automatic AdMob dependency**: Added automatic inclusion of Google Mobile Ads SDK (play-services-ads:22.6.0)
+- **Framework integration**: Plugin now automatically adds AdMob dependency to build.gradle via plugin.xml
+- **Compilation fix**: Resolved compilation errors related to missing AdMob classes (AdView, AdRequest, AdSize)
+- **Simplified setup**: No manual dependency configuration required
+
+### 🚀 Technical Improvements
+- **Build automation**: Streamlined build process with automatic dependency resolution
+- **Error prevention**: Prevents "cannot find symbol" errors for AdMob classes
+- **Plugin reliability**: Enhanced plugin installation process
+
+### 📝 Files Updated
+- `plugin.xml`: Added framework dependency for Google Mobile Ads SDK
+- `package.json`: Updated version to 1.0.12
+
+---
+
 ## [1.0.11] - 2024-12-19
 
 ### 🎨 UI/UX Improvements

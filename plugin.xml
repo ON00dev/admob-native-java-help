@@ -1,4 +1,4 @@
-<plugin id="admob-native-java-help" version="1.0.11" xmlns="http://apache.org/cordova/ns/plugins/1.0">
+<plugin id="admob-native-java-help" version="1.0.13" xmlns="http://apache.org/cordova/ns/plugins/1.0">
   <name>admob-native-java-help</name>
   <description>Cordova plugin to add native AdMob blocks to MainActivity.java</description>
 
@@ -11,5 +11,7 @@
   <platform name="android">
     <hook type="before_plugin_install" src="scripts/pre_install.js" />
     <hook type="after_plugin_install" src="scripts/after_install.js" />
+    
+    <framework src="com.google.android.gms:play-services-ads:22.6.0" />
   </platform>
 </plugin>
