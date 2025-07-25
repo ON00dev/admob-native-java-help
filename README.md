@@ -46,10 +46,7 @@ cordova plugin add admob-native-java-help --variable AD_TYPE="banner" --variable
 
 **3. Interstitial Only:**
 ```bash
-cordova plugin add admob-native-java-help
-  --variable AD_TYPE="interstitial"
-  --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-3940256099942544/1033173712"
-  --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
+cordova plugin add admob-native-java-help --variable AD_TYPE="interstitial" --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-3940256099942544/1033173712" --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
 ```
 
 **4. Banner + Interstitial (complete configuration):**
