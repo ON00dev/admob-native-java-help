@@ -2,6 +2,33 @@ const fs = require('fs');
 const path = require('path');
 
 function injectIntoMainActivity(filePath, config) {
+  // Check if admob-plus-cordova is installed to avoid conflicts
+  // filePath: .../platforms/android/app/src/main/java/com/teste/ok/MainActivity.java
+  // projectRoot should be: .../
+  const platformsIndex = filePath.indexOf('platforms');
+  if (platformsIndex === -1) {
+    console.log('[WARNING] Could not determine project root from file path');
+    return;
+  }
+  const projectRoot = filePath.substring(0, platformsIndex);
+  const packageJsonPath = path.join(projectRoot, 'package.json');
+  
+  console.log('[DEBUG] Project root detected:', projectRoot);
+  console.log('[DEBUG] Looking for package.json at:', packageJsonPath);
+  
+  if (fs.existsSync(packageJsonPath)) {
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+    const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
+    
+    if (dependencies['admob-plus-cordova']) {
+      console.log('[WARNING] admob-plus-cordova detected. Proceeding with native code injection for overlay functionality.');
+      console.log('[INFO] Both plugins will work together - admob-plus-cordova for SDK and native injection for overlay.');
+      console.log('[INFO] Skipping AndroidManifest.xml modifications as admob-plus-cordova handles them.');
+      // Skip AndroidManifest modifications when admob-plus-cordova is present
+      global.skipManifestModifications = true;
+    }
+  }
+  
   let code = fs.readFileSync(filePath, 'utf8');
 
   // Inject imports if not already present
@@ -96,6 +123,12 @@ function loadBlocks(config) {
 }
 
 function injectIntoAndroidManifest(manifestPath, appId) {
+  // Skip manifest modifications if admob-plus-cordova is present
+  if (global.skipManifestModifications) {
+    console.log('[OK] Skipping AndroidManifest.xml modifications - admob-plus-cordova handles them');
+    return;
+  }
+  
   let content = fs.readFileSync(manifestPath, 'utf8');
   
   // Check if AdMob Application ID is already present

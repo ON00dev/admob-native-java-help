@@ -9,9 +9,7 @@ Cordova plugin to dynamically inject **native AdMob blocks** into `MainActivity.
 This plugin **does not include** the AdMob SDK directly. You must also install the [`admob-plus-cordova`](https://admob-plus.github.io) plugin:
 
 ```bash
-cordova plugin add admob-plus-cordova \
-  --variable APP_ID_ANDROID="ca-app-pub-xxxxxxxxxxxxxxxx~yyyyyyyyyy" \
-  --variable PLAY_SERVICES_VERSION="21.5.0"
+cordova plugin add admob-plus-cordova --variable APP_ID_ANDROID="ca-app-pub-xxxxxxxxxxxxxxxx~yyyyyyyyyy"
 ```
 🧪 Use Google AdMob test IDs during development.
 

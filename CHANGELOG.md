@@ -2,6 +2,29 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [1.0.17] - 2024-12-19
+
+### Fixed
+- **COMPATIBILIDADE CRÍTICA**: Resolvido conflito de duplicação com plugin admob-plus-cordova
+- **AndroidManifest.xml**: Plugin agora detecta admob-plus-cordova e pula modificações no manifest para evitar duplicações
+- **AdActivity duplicada**: Implementada lógica para prevenir duplicação da activity com.google.android.gms.ads.AdActivity
+- **Compilação Android**: Corrigidos erros de sintaxe Java no MainActivity.java
+- **Integração harmoniosa**: Ambos plugins agora funcionam juntos sem conflitos
+
+### Added
+- **Detecção automática**: Plugin detecta presença do admob-plus-cordova automaticamente
+- **Skip inteligente**: Pula modificações no AndroidManifest.xml quando admob-plus-cordova está presente
+- **Logs informativos**: Mensagens claras sobre compatibilidade entre plugins
+- **Divisão de responsabilidades**: admob-plus-cordova gerencia SDK, admob-native-java-help cria overlay
+
+### Technical Details
+- O plugin agora verifica dependencies no package.json para detectar admob-plus-cordova
+- Quando detectado, define global.skipManifestModifications = true
+- Função injectIntoAndroidManifest verifica flag antes de modificar manifest
+- Mantém apenas injeção de código nativo no MainActivity.java para funcionalidade de overlay
+- Resolve conflitos de AdActivity duplicada que causavam falha na compilação
+- Permite uso conjunto: admob-plus-cordova (SDK base) + admob-native-java-help (overlay nativo)
+
 ## [1.0.16] - 2024-12-19
 
 ### Fixed
