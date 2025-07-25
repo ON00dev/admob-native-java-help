@@ -172,6 +172,55 @@ cordova run android
 
 ## 🔧 Troubleshooting
 
+### Problem: ENOENT error - cordova_plugins.js not found
+If you get `ENOENT: no such file or directory, open '...cordova_plugins.js'`:
+
+1. **Ensure the Android platform is added:**
+```bash
+cordova platform add android
+```
+
+2. **Prepare the project first:**
+```bash
+cordova prepare android
+```
+
+3. **Then install the plugin:**
+```bash
+cordova plugin add admob-native-java-help --variable AD_TYPE="banner" --variable AD_POSITION="top" --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
+```
+
+### Problem: CLI variables showing as empty {}
+If you see `[DEBUG] Received CLI variables: {}`:
+
+1. **Use the local plugin installation method:**
+```bash
+# Clone or download the plugin locally first
+git clone https://github.com/ON00dev/admob-native-java-help.git
+
+# Then install from local path
+cordova plugin add ./admob-native-java-help --variable AD_TYPE="banner" --variable AD_POSITION="top" --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
+```
+
+2. **Alternative: Install without variables and edit userConfig.json manually:**
+```bash
+# Install without variables
+cordova plugin add admob-native-java-help
+
+# Then edit the file: plugins/admob-native-java-help/scripts/userConfig.json
+# Change the values manually:
+{
+  "adType": "banner",
+  "adPosition": "top",
+  "bannerId": "ca-app-pub-3940256099942544/6300978111",
+  "interstitialId": "ca-app-pub-3940256099942544/1033173712",
+  "appId": "ca-app-pub-3940256099942544~3347511713"
+}
+
+# Then run the after_install script manually
+node plugins/admob-native-java-help/scripts/after_install.js
+```
+
 ### Problem: Variables not being saved correctly
 If you see `undefined` values in the installation log:
 
