@@ -19,7 +19,7 @@ cordova plugin add admob-plus-cordova \
 Clone or download this repository and install locally:
 
 ```bash
-cordova plugin add admob-native-java-help
+cordova plugin add admob-native-java-help@latest
 ```
 
 ## ⚙️ Available Variables
@@ -115,8 +115,3 @@ Contributions, improvements and forks are welcome!
 
 ## 📄 License
 MIT © [Current Year] — You are free to modify, reuse and share.
-
-
-
-
-
