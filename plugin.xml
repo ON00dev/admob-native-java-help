@@ -1,4 +1,4 @@
-<plugin id="admob-native-java-help" version="1.0.13" xmlns="http://apache.org/cordova/ns/plugins/1.0">
+<plugin id="admob-native-java-help" version="1.0.14" xmlns="http://apache.org/cordova/ns/plugins/1.0">
   <name>admob-native-java-help</name>
   <description>Cordova plugin to add native AdMob blocks to MainActivity.java</description>
 

@@ -2,6 +2,18 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [1.0.14] - 2024-12-19
+### [OK] Melhorias
+- **Documentação aprimorada**: Melhorada a clareza das instruções de uso no README
+- **Validação de funcionamento**: Confirmado que todas as injeções automáticas funcionam corretamente
+- **Testes de compatibilidade**: Verificada compatibilidade com diferentes estruturas de projeto Cordova
+
+### [OK] Arquivos atualizados
+- `package.json`: Versão atualizada para 1.0.14
+- `plugin.xml`: Versão atualizada para 1.0.14
+
+---
+
 ## [1.0.13] - 2024-12-19
 ### [OK] Melhorias
 - **Injeção automática de imports**: Plugin agora injeta automaticamente os imports necessários do AdMob no MainActivity.java
