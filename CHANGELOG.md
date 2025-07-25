@@ -2,6 +2,19 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [1.0.15] - 2024-12-19
+
+### Fixed
+- **CRITICAL BUG**: Fixed app crash caused by missing AdMob Application ID in AndroidManifest.xml
+- Added automatic injection of `com.google.android.gms.ads.APPLICATION_ID` meta-data in AndroidManifest.xml
+- Enhanced after_install.js script to configure both MainActivity.java and AndroidManifest.xml
+- Added `injectIntoAndroidManifest` function in utils.js for proper AdMob initialization
+
+### Technical Details
+- The app was crashing with `IllegalStateException: Invalid application ID` because the AdMob SDK requires the Application ID to be declared in AndroidManifest.xml
+- The plugin now automatically injects the required meta-data tag during installation
+- This resolves the crash that occurred when opening apps with AdMob integration
+
 ## [1.0.14] - 2024-12-19
 ### [OK] Melhorias
 - **Documentação aprimorada**: Melhorada a clareza das instruções de uso no README

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { injectIntoMainActivity } = require('../src/android/utils');
+const { injectIntoMainActivity, injectIntoAndroidManifest } = require('../src/android/utils');
 
 module.exports = function (ctx) {
   const projectRoot = ctx.opts.projectRoot;
@@ -17,6 +17,7 @@ module.exports = function (ctx) {
   try {
     const packageDir = getPackageDirFromConfig(projectRoot);
     const mainActivityPath = path.join(packageDir, 'MainActivity.java');
+    const manifestPath = path.join(projectRoot, 'platforms/android/app/src/main/AndroidManifest.xml');
     
     // Check if MainActivity.java exists
     if (!fs.existsSync(mainActivityPath)) {
@@ -24,10 +25,25 @@ module.exports = function (ctx) {
       return;
     }
 
-    console.log('[OK] AdMob blocks injected successfully.');
+    // Check if AndroidManifest.xml exists
+    if (!fs.existsSync(manifestPath)) {
+      console.error(`❌ AndroidManifest.xml not found at: ${manifestPath}`);
+      return;
+    }
+
+    // Inject AdMob blocks into MainActivity.java
     injectIntoMainActivity(mainActivityPath, config);
+    
+    // Inject Application ID into AndroidManifest.xml
+    if (config.appId) {
+      injectIntoAndroidManifest(manifestPath, config.appId);
+    } else {
+      console.error('❌ AdMob Application ID not found in configuration');
+    }
+    
+    console.log('[OK] AdMob configuration completed successfully.');
   } catch (error) {
-    console.error('❌ Error processing MainActivity.java:', error.message);
+    console.error('❌ Error processing AdMob configuration:', error.message);
   }
 };
 

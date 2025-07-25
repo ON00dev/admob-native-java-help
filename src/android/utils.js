@@ -95,4 +95,30 @@ function loadBlocks(config) {
   return blocks.join('\n\n');
 }
 
-module.exports = { injectIntoMainActivity };
+function injectIntoAndroidManifest(manifestPath, appId) {
+  let content = fs.readFileSync(manifestPath, 'utf8');
+  
+  // Check if AdMob Application ID is already present
+  if (content.includes('com.google.android.gms.ads.APPLICATION_ID')) {
+    console.log('[OK] AdMob Application ID already present in AndroidManifest.xml');
+    return;
+  }
+  
+  // Find the application tag and inject the meta-data
+  const applicationTagRegex = /(<application[^>]*>)/;
+  const match = content.match(applicationTagRegex);
+  
+  if (match) {
+    const metaData = `\n        <meta-data\n            android:name="com.google.android.gms.ads.APPLICATION_ID"\n            android:value="${appId}" />`;
+    
+    const insertPosition = content.indexOf(match[1]) + match[1].length;
+    content = content.slice(0, insertPosition) + metaData + content.slice(insertPosition);
+    
+    fs.writeFileSync(manifestPath, content, 'utf8');
+    console.log('[OK] AdMob Application ID injected into AndroidManifest.xml');
+  } else {
+    console.error('❌ Could not find application tag in AndroidManifest.xml');
+  }
+}
+
+module.exports = { injectIntoMainActivity, injectIntoAndroidManifest };
