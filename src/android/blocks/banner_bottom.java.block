@@ -1,0 +1,23 @@
+// Banner AdMob - Bottom
+AdView adView = new AdView(this);
+adView.setAdSize(AdSize.BANNER);
+adView.setAdUnitId("{{BANNER_ID}}");
+AdRequest adRequest = new AdRequest.Builder().build();
+adView.loadAd(adRequest);
+
+LinearLayout layout = new LinearLayout(this);
+layout.setOrientation(LinearLayout.VERTICAL);
+layout.setBackgroundColor(0x00000000);
+
+android.view.ViewGroup parent = (android.view.ViewGroup) appView.getView().getParent();
+if (parent != null) parent.removeView(appView.getView());
+
+layout.addView(appView.getView(), new LinearLayout.LayoutParams(
+  LinearLayout.LayoutParams.MATCH_PARENT, 0, 1.0f
+));
+
+layout.addView(adView, new LinearLayout.LayoutParams(
+  LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+));
+
+setContentView(layout);

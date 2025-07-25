@@ -1,0 +1,20 @@
+{
+  "name": "admob-native-java-help",
+  "version": "1.0.0",
+  "description": "helper plugin for admob with cordova.",
+  "homepage": "https://github.com/ON00dev/admob-native-help#readme",
+  "bugs": {
+    "url": "https://github.com/ON00dev/admob-native-help/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ON00dev/admob-native-help.git"
+  },
+  "license": "MIT",
+  "author": "ON00dev",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

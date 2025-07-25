@@ -1,0 +1,29 @@
+// Interface JavaScript para interstitial
+@android.webkit.JavascriptInterface
+public void showAd() {
+    showInterstitialAd();
+}
+
+@android.webkit.JavascriptInterface
+public boolean isAdLoaded() {
+    return mInterstitialAd != null;
+}
+
+@android.webkit.JavascriptInterface
+public void setOnAdClosedCallback(String callback) {
+    jsCallbackFunction = callback;
+}
+
+private String jsCallbackFunction = null;
+
+private void runJSAdClosedCallback() {
+    if (jsCallbackFunction != null && appView != null && appView.getView() instanceof android.webkit.WebView) {
+        ((android.webkit.WebView) appView.getView()).evaluateJavascript(jsCallbackFunction + "();", null);
+    }
+}
+
+@Override
+protected void onStart() {
+    super.onStart();
+    if (appView != null && appView.getView() instanceof android.webkit.WebView) {
+        ((android.webkit.WebView) appView.getView()).addJavascriptInterface(this, "

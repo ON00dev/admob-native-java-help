@@ -1,0 +1,15 @@
+<plugin id="cordova-admob-native" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0">
+  <name>cordova-admob-native</name>
+  <description>Plugin Cordova para adicionar blocos nativos AdMob ao MainActivity.java</description>
+
+  <preference name="AD_TYPE" default="banner" />
+  <preference name="AD_POSITION" default="bottom" />
+  <preference name="BANNER_AD_UNIT_ID" default="ca-app-pub-3940256099942544/6300978111" />
+  <preference name="INTERSTITIAL_AD_UNIT_ID" default="ca-app-pub-3940256099942544/1033173712" />
+  <preference name="APP_ID" default="ca-app-pub-3940256099942544~3347511713" />
+
+  <platform name="android">
+    <hook type="before_plugin_install" src="scripts/pre_install.js" />
+    <hook type="after_plugin_install" src="scripts/after_install.js" />
+  </platform>
+</plugin>
