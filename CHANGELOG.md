@@ -2,6 +2,23 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [1.0.16] - 2024-12-19
+
+### Fixed
+- **CRITICAL BUG**: Fixed app crash caused by missing AdMob Application ID in AndroidManifest.xml
+- **CRITICAL BUG**: Fixed app crash caused by premature AdMob initialization before Cordova was ready
+- Added automatic injection of `com.google.android.gms.ads.APPLICATION_ID` meta-data in AndroidManifest.xml
+- Enhanced after_install.js script to configure both MainActivity.java and AndroidManifest.xml
+- Added `injectIntoAndroidManifest` function in utils.js for proper AdMob initialization
+- Updated banner blocks to use delayed initialization with appView.post()
+
+### Technical Details
+- The app was crashing with `IllegalStateException: Invalid application ID` because the AdMob SDK requires the Application ID to be declared in AndroidManifest.xml
+- Fixed timing issue where AdMob code was executing before Cordova was fully initialized
+- AdMob banner initialization now runs after loadUrl() using delayed execution
+- The plugin now automatically injects the required meta-data tag during installation
+- This resolves the crash that occurred when opening apps with AdMob integration
+
 ## [1.0.15] - 2024-12-19
 
 ### Fixed

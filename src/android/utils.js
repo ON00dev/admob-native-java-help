@@ -7,10 +7,10 @@ function injectIntoMainActivity(filePath, config) {
   // Inject imports if not already present
   code = injectImports(code);
 
-  // Inject using safe marker
+  // Inject using safe marker after loadUrl to ensure Cordova is initialized
   if (!code.includes('// ADMOB_NATIVE_PLUGIN')) {
     code = code.replace(
-      /super\.onCreate\(.*?\);/,
+      /loadUrl\s*\(\s*launchUrl\s*\)\s*;/,
       match => `${match}\n\n// ADMOB_NATIVE_PLUGIN\n${loadBlocks(config)}`
     );
   }
