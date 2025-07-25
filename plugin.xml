@@ -1,5 +1,5 @@
-<plugin id="cordova-admob-native" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0">
-  <name>cordova-admob-native</name>
+<plugin id="admob-native-java-help" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0">
+  <name>admob-native-java-help</name>
   <description>Plugin Cordova para adicionar blocos nativos AdMob ao MainActivity.java</description>
 
   <preference name="AD_TYPE" default="banner" />

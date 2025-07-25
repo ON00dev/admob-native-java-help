@@ -1,97 +1,99 @@
-# 📦 cordova-admob-native
+# 📦 admob-native-java-help
 
-Plugin Cordova para injetar dinamicamente **blocos nativos do AdMob** no `MainActivity.java`, possibilitando sobrepor banners e intersticiais à WebView do Cordova — com flexibilidade, sem sobrescrever arquivos inteiros, e respeitando as escolhas do usuário.
+Cordova plugin to dynamically inject **native AdMob blocks** into `MainActivity.java`, enabling banners and interstitials to overlay the Cordova WebView — with flexibility, without overwriting entire files, and respecting user choices.
 
 ---
 
-## ⚠️ Requisitos obrigatórios
+## ⚠️ Mandatory Requirements
 
-Este plugin **não inclui** o SDK do AdMob diretamente. É necessário instalar também o plugin [`admob-plus-cordova`](https://github.com/admob-plus/admob-plus):
+This plugin **does not include** the AdMob SDK directly. You must also install the [`admob-plus-cordova`](https://admob-plus.github.io) plugin:
 
 ```bash
 cordova plugin add admob-plus-cordova \
   --variable APP_ID_ANDROID="ca-app-pub-xxxxxxxxxxxxxxxx~yyyyyyyyyy" \
   --variable PLAY_SERVICES_VERSION="21.5.0"
 ```
-🧪 Use IDs de teste do Google AdMob durante o desenvolvimento.
+🧪 Use Google AdMob test IDs during development.
 
-## 🚀 Instalação do Plugin
-Clone ou baixe este repositório e instale localmente:
+## 🚀 Plugin Installation
+Clone or download this repository and install locally:
 
 ```bash
-cordova plugin add /caminho/para/cordova-admob-native \
-  --variable AD_TYPE="banner,interstitial" \
-  --variable AD_POSITION="bottom" \
-  --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" \
-  --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-3940256099942544/1033173712" \
-  --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
+cordova plugin add admob-native-java-help
 ```
 
-## ⚙️ Variáveis Disponíveis
+## ⚙️ Available Variables
 
-| Variável | Obrigatório | Descrição |
+| Variable | Required | Description |
 | --- | --- | --- |
-| AD_TYPE | ✅ | Tipo de anúncio: banner, interstitial ou banner,interstitial |
-| AD_POSITION | ❌ | top, bottom (padrão: bottom) |
-| BANNER_AD_UNIT_ID | ✅ (se usar banner) | ID do banner AdMob |
-| INTERSTITIAL_AD_UNIT_ID | ✅ (se usar interstitial) | ID do intersticial AdMob |
-| APP_ID | ✅ | App ID fornecido pelo AdMob |
+| AD_TYPE | ✅ | Ad type: banner, interstitial or banner,interstitial |
+| AD_POSITION | ❌ | top, bottom (default: bottom) |
+| BANNER_AD_UNIT_ID | ✅ (if using banner) | AdMob banner ID |
+| INTERSTITIAL_AD_UNIT_ID | ✅ (if using interstitial) | AdMob interstitial ID |
+| APP_ID | ✅ | App ID provided by AdMob |
 
 
-📄 Exemplo de uso com WebView Cordova
-Para exibir interstitial via JavaScript:
-js
-Copiar
-Editar
-// Exibe o anúncio
+## 📄 Usage example with Cordova WebView
+To display interstitial via JavaScript:
+```js
+// Show the ad
 window.AndroidInterstitial.showAd();
 
-// Verifica se está carregado
+// Check if it's loaded
 if (window.AndroidInterstitial.isAdLoaded()) {
-  console.log('Pronto para exibir anúncio intersticial');
+  console.log('Ready to display interstitial ad');
 }
 
-// Registra callback quando o anúncio for fechado
+// Register callback when ad is closed
 window.AndroidInterstitial.setOnAdClosedCallback(function () {
-  console.log('Anúncio intersticial fechado!');
+  console.log('Interstitial ad closed!');
 });
-📐 Como o plugin funciona
-Localiza automaticamente seu MainActivity.java;
+```
 
-Injeta apenas os blocos necessários (banner_top, banner_bottom, interstitial, js_interface);
+## 📐 How the plugin works
 
-Substitui dinamicamente os placeholders {{BANNER_ID}}, {{INTERSTITIAL_ID}};
+1. Automatically locates your MainActivity.java;
 
-Garante compatibilidade com WebView sem sobrepor o conteúdo existente;
+2. Injects only the necessary blocks (banner_top, banner_bottom, interstitial, js_interface);
 
-Permite reaplicação sem duplicações via marcador // ADMOB_NATIVE_PLUGIN.
+3. Dynamically replaces placeholders {{BANNER_ID}}, {{INTERSTITIAL_ID}};
 
-🛠️ Comandos úteis
-bash
-Copiar
-Editar
+4. Ensures WebView compatibility without overlapping existing content;
+
+5. Allows reapplication without duplications via // ADMOB_NATIVE_PLUGIN marker.
+
+## 🛠️ Useful Commands
+```bash
 cordova clean android
 cordova build android
 cordova run android
-🧪 IDs de Teste (Google AdMob)
-Tipo	ID de Teste
-App ID	ca-app-pub-3940256099942544~3347511713
-Banner	ca-app-pub-3940256099942544/6300978111
-Interstitial	ca-app-pub-3940256099942544/1033173712
+```
 
-⚠️ Observações importantes
-As alterações são feitas no MainActivity.java gerado pelo Cordova (em platforms/android/...). Se você remover a plataforma Android, as injeções serão perdidas.
+## 🧪 Test IDs (Google AdMob)
 
-Sempre use IDs de teste antes de publicar seu app.
+| Type | Test ID |
+| --- | --- |
+| App ID | ca-app-pub-3940256099942544~3347511713 |
+| Banner | ca-app-pub-3940256099942544/6300978111 |
+| Interstitial | ca-app-pub-3940256099942544/1033173712 |
 
-Compatível com projetos que utilizam admob-plus-cordova, não precisa duplicar SDK.
+## ⚠️ Important Notes
+Changes are made to the MainActivity.java generated by Cordova (in `platforms\android\app\src\main\java\com\your_package\app_name\MainActivity.java`). If you remove the Android platform, the injections will be lost.
+Before building the apk or running the apk, run:
+```bash
+cordova prepare android
+```
 
-Não sobrescreve o MainActivity inteiro, portanto é seguro para projetos já existentes.
+Always use test IDs before publishing your app.
 
-## 📁 Estrutura do Plugin
+Compatible with projects using admob-plus-cordova, no need to duplicate SDK.
+
+Does not overwrite the entire MainActivity, therefore it's safe for existing projects.
+
+## 📁 Plugin Structure
 
 ```bash
-cordova-admob-native/
+admob-native-java-help/
 ├── plugin.xml
 ├── package.json
 ├── scripts/
@@ -107,12 +109,12 @@ cordova-admob-native/
 └── README.md
 ```
 
-## 👨‍💻 Autor
-Desenvolvido por ON00dev
-Contribuições, melhorias e forks são bem-vindos!
+## 👨‍💻 Author
+Developed by ON00dev
+Contributions, improvements and forks are welcome!
 
-## 📄 Licença
-MIT © [Ano Atual] — Você é livre para modificar, reutilizar e compartilhar.
+## 📄 License
+MIT © [Current Year] — You are free to modify, reuse and share.
 
 
 
