@@ -1,6 +1,6 @@
 {
   "name": "admob-native-java-help",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "helper plugin for admob with cordova.",
   "homepage": "https://github.com/ON00dev/admob-native-help#readme",
   "bugs": {
@@ -13,7 +13,7 @@
   "license": "MIT",
   "author": "ON00dev",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "scripts/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   }
