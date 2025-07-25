@@ -12,5 +12,5 @@ module.exports = function (ctx) {
   };
 
   fs.writeFileSync(path.join(__dirname, 'userConfig.json'), JSON.stringify(output, null, 2));
-  console.log('✅ Configurações salvas:', output);
+  console.log('[OK] Settings saved:', output);
 };

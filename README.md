@@ -26,11 +26,11 @@ cordova plugin add admob-native-java-help@latest
 
 | Variable | Required | Description |
 | --- | --- | --- |
-| AD_TYPE | ✅ | Ad type: banner, interstitial or banner,interstitial |
+| AD_TYPE | [OK] | Ad type: banner, interstitial or banner,interstitial |
 | AD_POSITION | ❌ | top, bottom (default: bottom) |
-| BANNER_AD_UNIT_ID | ✅ (if using banner) | AdMob banner ID |
-| INTERSTITIAL_AD_UNIT_ID | ✅ (if using interstitial) | AdMob interstitial ID |
-| APP_ID | ✅ | App ID provided by AdMob |
+| BANNER_AD_UNIT_ID | [OK] (if using banner) | AdMob banner ID |
+| INTERSTITIAL_AD_UNIT_ID | [OK] (if using interstitial) | AdMob interstitial ID |
+| APP_ID | [OK] | App ID provided by AdMob |
 
 
 ## 📄 Usage example with Cordova WebView
@@ -90,7 +90,7 @@ Compatible with projects using admob-plus-cordova, no need to duplicate SDK.
 
 Does not overwrite the entire MainActivity, therefore it's safe for existing projects.
 
-## 📁 Plugin Structure
+## [FOLDER] Plugin Structure
 
 ```bash
 admob-native-java-help/

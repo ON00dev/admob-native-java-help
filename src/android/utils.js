@@ -4,7 +4,7 @@ const path = require('path');
 function injectIntoMainActivity(filePath, config) {
   let code = fs.readFileSync(filePath, 'utf8');
 
-  // Injeta por marcador seguro
+  // Inject using safe marker
   if (!code.includes('// ADMOB_NATIVE_PLUGIN')) {
     code = code.replace(
       /super\.onCreate\(.*?\);/,
@@ -13,7 +13,7 @@ function injectIntoMainActivity(filePath, config) {
   }
 
   fs.writeFileSync(filePath, code, 'utf8');
-  console.log('✅ Blocos do AdMob injetados com sucesso.');
+  console.log('[OK] AdMob blocks injected successfully.');
 }
 
 function loadBlocks(config) {

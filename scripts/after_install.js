@@ -6,48 +6,54 @@ module.exports = function (ctx) {
   const projectRoot = ctx.opts.projectRoot;
   const configPath = path.join(__dirname, 'userConfig.json');
   
-  // Verificar se o arquivo de configuração existe
+  // Check if configuration file exists
   if (!fs.existsSync(configPath)) {
-    console.error('❌ Arquivo userConfig.json não encontrado');
+    console.error('❌ userConfig.json file not found');
     return;
   }
   
   const config = JSON.parse(fs.readFileSync(configPath));
 
   try {
-    const packageDir = findPackageDir(projectRoot);
+    const packageDir = getPackageDirFromConfig(projectRoot);
     const mainActivityPath = path.join(packageDir, 'MainActivity.java');
     
-    // Verificar se o MainActivity.java existe
+    // Check if MainActivity.java exists
     if (!fs.existsSync(mainActivityPath)) {
-      console.error(`❌ MainActivity.java não encontrado em: ${mainActivityPath}`);
+      console.error(`❌ MainActivity.java not found at: ${mainActivityPath}`);
       return;
     }
 
+    console.log('[OK] AdMob blocks injected successfully.');
     injectIntoMainActivity(mainActivityPath, config);
   } catch (error) {
-    console.error('❌ Erro ao processar MainActivity.java:', error.message);
+    console.error('❌ Error processing MainActivity.java:', error.message);
   }
 };
 
-// Localiza o caminho com base no package
-function findPackageDir(root) {
-  const javaDir = path.join(root, 'platforms/android/app/src/main/java/');
+// Locate path based on package name from config.xml
+function getPackageDirFromConfig(root) {
+  const configXmlPath = path.join(root, 'config.xml');
   
-  // Verificar se o diretório Java existe
-  if (!fs.existsSync(javaDir)) {
-    throw new Error(`Diretório Java não encontrado: ${javaDir}`);
+  if (!fs.existsSync(configXmlPath)) {
+    throw new Error(`config.xml not found at: ${configXmlPath}`);
   }
   
-  const files = fs.readdirSync(javaDir, { withFileTypes: true });
+  const configContent = fs.readFileSync(configXmlPath, 'utf8');
+  const packageMatch = configContent.match(/id="([^"]+)"/); 
   
-  for (const file of files) {
-    if (file.isDirectory()) {
-      const packagePath = path.join(javaDir, file.name);
-      console.log(`📁 Pacote encontrado: ${file.name}`);
-      return packagePath;
-    }
+  if (!packageMatch) {
+    throw new Error('Package ID not found in config.xml');
   }
   
-  throw new Error(`Nenhum diretório de pacote encontrado em: ${javaDir}`);
+  const packageName = packageMatch[1];
+  console.log(`[FOLDER] Package found: ${packageName}`);
+  
+  // Convert package name to path (com.teste.ok -> com/teste/ok)
+  const packagePath = packageName.replace(/\./g, path.sep);
+  const javaDir = path.join(root, 'platforms/android/app/src/main/java', packagePath);
+  
+  console.log(`[FOLDER] MainActivity path: ${javaDir}`);
+  
+  return javaDir;
 }
