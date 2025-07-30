@@ -108,24 +108,40 @@ function loadBlocks(config) {
   const blockDir = path.join(__dirname, 'blocks');
   const blocks = [];
 
+  // Adiciona variáveis sempre
+  let variables = fs.readFileSync(path.join(blockDir, 'variables.java.block'), 'utf8');
+  variables = variables.replace(/{{INTERSTITIAL_AD_UNIT_ID}}/g, config.interstitialId);
+  variables = variables.replace(/{{BANNER_AD_UNIT_ID}}/g, config.bannerId);
+  variables = variables.replace(/{{BANNER_SHOW_ON_PAGES}}/g, config.bannerShowOnPages || 'index.html');
+  variables = variables.replace(/{{BANNER_HIDE_ON_PAGES}}/g, config.bannerHideOnPages || '');
+  variables = variables.replace(/{{CHECK_URL_INTERVAL}}/g, config.checkUrlInterval || '1000');
+  variables = variables.replace(/{{SETUP_DELAY}}/g, config.setupDelay || '2000');
+  variables = variables.replace(/{{JS_INTERFACE_DELAY}}/g, config.jsInterfaceDelay || '3000');
+  blocks.push(variables);
+
   if (config.adType.includes('banner')) {
-    const pos = config.adPosition.toLowerCase() === 'top' ? 'banner_top' : 'banner_bottom';
-    let banner = fs.readFileSync(path.join(blockDir, `${pos}.java.block`), 'utf8');
-    banner = banner.replace(/{{BANNER_ID}}/g, config.bannerId);
-    blocks.push(banner);
+    // Adiciona métodos de verificação de páginas
+    const checkPages = fs.readFileSync(path.join(blockDir, 'check_pages.java.block'), 'utf8');
+    blocks.push(checkPages);
+    
+    // Adiciona método de configuração do banner
+    let setupBanner = fs.readFileSync(path.join(blockDir, 'setup_banner.java.block'), 'utf8');
+    setupBanner = setupBanner.replace(/{{AD_POSITION}}/g, config.adPosition);
+    blocks.push(setupBanner);
   }
 
   if (config.adType.includes('interstitial')) {
-    // Adiciona inicialização do AdMob
-    const admobInit = fs.readFileSync(path.join(blockDir, `admob_init.java.block`), 'utf8');
-    blocks.push(admobInit);
+    // Adiciona configuração da interface JavaScript
+    const setupJsInterface = fs.readFileSync(path.join(blockDir, 'setup_js_interface.java.block'), 'utf8');
+    blocks.push(setupJsInterface);
     
-    let inter = fs.readFileSync(path.join(blockDir, `interstitial.java.block`), 'utf8');
-    inter = inter.replace(/{{INTERSTITIAL_ID}}/g, config.interstitialId);
-    blocks.push(inter);
-
-    const jsIf = fs.readFileSync(path.join(blockDir, `js_interface.java.block`), 'utf8');
-    blocks.push(jsIf);
+    // Adiciona métodos do intersticial
+    const interstitialMethods = fs.readFileSync(path.join(blockDir, 'interstitial_methods.java.block'), 'utf8');
+    blocks.push(interstitialMethods);
+    
+    // Adiciona inicialização do AdMob
+    const admobInit = fs.readFileSync(path.join(blockDir, 'admob_init.java.block'), 'utf8');
+    blocks.push(admobInit);
   }
 
   return blocks.join('\n\n');

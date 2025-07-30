@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2025-07-30
+
+### Added
+- **CUSTOM PREFERENCES**: Added configurable preferences for advanced banner control
+  - `BANNER_SHOW_ON_PAGES`: Control which pages display banners
+  - `BANNER_HIDE_ON_PAGES`: Control which pages hide banners
+  - `CHECK_URL_INTERVAL`: Configurable URL checking interval
+  - `SETUP_DELAY`: Configurable setup delay
+  - `JS_INTERFACE_DELAY`: Configurable JavaScript interface delay
+- **MODULAR ARCHITECTURE**: Complete restructure with separate Java blocks
+  - `variables.java.block`: Centralized variable management
+  - `check_pages.java.block`: URL monitoring and page detection
+  - `setup_banner.java.block`: Banner configuration and positioning
+  - `setup_js_interface.java.block`: JavaScript interface setup
+  - `interstitial_methods.java.block`: Interstitial ad management
+- **EXAMPLE FILES**: Comprehensive examples for developers
+  - `example/index.html`: Complete HTML interface demo
+  - `example/admob-example.js`: JavaScript library with AdMobManager class
+  - `example/README.md`: Detailed documentation and usage guide
+
+### Enhanced
+- **SMART PAGE DETECTION**: Automatic URL monitoring with configurable intervals
+- **FLEXIBLE BANNER CONTROL**: Show/hide banners based on current page
+- **IMPROVED JAVASCRIPT INTERFACE**: Enhanced callback system and error handling
+- **BETTER CONFIGURATION**: All timing and behavior aspects are now configurable
+- **DEVELOPER EXPERIENCE**: Complete examples and documentation
+
+### Technical Improvements
+- Modular Java block architecture for better maintainability
+- Enhanced utils.js with support for all new configuration options
+- Improved pre_install.js to handle new preference variables
+- Better separation of concerns between different plugin components
+- Comprehensive error handling and logging throughout
+
 ## [1.1.0] - 2025-07-30
 
 ### Fixed

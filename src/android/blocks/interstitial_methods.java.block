@@ -1,0 +1,75 @@
+// Método para carregar anúncio intersticial
+private void loadInterstitialAd() {
+    AdRequest adRequest = new AdRequest.Builder().build();
+    
+    InterstitialAd.load(this, INTERSTITIAL_AD_UNIT_ID, adRequest,
+        new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdLoaded(InterstitialAd interstitialAd) {
+                android.util.Log.d("MainActivity", "Anúncio intersticial carregado");
+                mInterstitialAd = interstitialAd;
+                
+                // Configura callbacks para eventos do anúncio
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                    @Override
+                    public void onAdClicked() {
+                        android.util.Log.d("MainActivity", "Anúncio intersticial clicado");
+                    }
+                    
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        android.util.Log.d("MainActivity", "Anúncio intersticial fechado");
+                        mInterstitialAd = null;
+                        
+                        // Chama o callback JavaScript se estiver registrado
+                        if (jsCallbackFunction != null && appView != null && appView.getView() instanceof android.webkit.WebView) {
+                            android.webkit.WebView webView = (android.webkit.WebView) appView.getView();
+                            runOnUiThread(() -> {
+                                android.util.Log.d("MainActivity", "Executando callback JavaScript: " + jsCallbackFunction);
+                                webView.evaluateJavascript(jsCallbackFunction + "();", null);
+                            });
+                        }
+                        
+                        // Recarrega um novo anúncio para a próxima vez
+                        loadInterstitialAd();
+                    }
+                    
+                    @Override
+                    public void onAdFailedToShowFullScreenContent(com.google.android.gms.ads.AdError adError) {
+                        android.util.Log.e("MainActivity", "Falha ao exibir anúncio intersticial: " + adError.getMessage());
+                        mInterstitialAd = null;
+                    }
+                    
+                    @Override
+                    public void onAdImpression() {
+                        android.util.Log.d("MainActivity", "Anúncio intersticial exibido");
+                    }
+                    
+                    @Override
+                    public void onAdShowedFullScreenContent() {
+                        android.util.Log.d("MainActivity", "Anúncio intersticial mostrado em tela cheia");
+                    }
+                });
+            }
+            
+            @Override
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                android.util.Log.e("MainActivity", "Falha ao carregar anúncio intersticial: " + loadAdError.getMessage());
+                mInterstitialAd = null;
+            }
+        });
+}
+
+// Método público para exibir anúncio intersticial (chamado pelo JavaScript)
+public void showInterstitialAd() {
+    runOnUiThread(() -> {
+        if (mInterstitialAd != null) {
+            android.util.Log.d("MainActivity", "Exibindo anúncio intersticial");
+            mInterstitialAd.show(MainActivity.this);
+        } else {
+            android.util.Log.d("MainActivity", "Anúncio intersticial não está carregado");
+            // Tenta carregar novamente
+            loadInterstitialAd();
+        }
+    });
+}

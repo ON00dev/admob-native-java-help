@@ -1,0 +1,69 @@
+private void setupAdMobBanner() {
+    // Evita configurar o AdMob múltiplas vezes
+    if (adMobSetup) {
+        return;
+    }
+    adMobSetup = true;
+    
+    android.util.Log.d("MainActivity", "Configurando banner AdMob");
+    
+    // Cria o banner AdMob
+    AdView adView = new AdView(this);
+    adView.setAdSize(AdSize.BANNER);
+    adView.setAdUnitId(BANNER_AD_UNIT_ID);
+    AdRequest adRequest = new AdRequest.Builder().build();
+    adView.loadAd(adRequest);
+
+    // Obtém a WebView do Cordova
+    if (appView != null && appView.getView() != null) {
+        // Cria um layout vertical que contenha WebView + AdView
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setBackgroundColor(0xff000000); // Fundo preto padrão
+        
+        // Remove a WebView do parent atual antes de adicionar ao novo layout
+        android.view.ViewGroup parent = (android.view.ViewGroup) appView.getView().getParent();
+        if (parent != null) {
+            parent.removeView(appView.getView());
+        }
+        
+        // Configura a WebView para manter o CSS original e eventos de toque
+        appView.getView().setBackgroundColor(0x00000000);
+        appView.getView().setClickable(true);
+        appView.getView().setFocusable(true);
+        appView.getView().setFocusableInTouchMode(true);
+        
+        // Configurações adicionais para garantir interatividade
+        if (appView.getView() instanceof android.webkit.WebView) {
+            android.webkit.WebView webView = (android.webkit.WebView) appView.getView();
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setDomStorageEnabled(true);
+            webView.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
+        }
+        
+        // Parâmetros para a WebView ocupar o espaço disponível
+        LinearLayout.LayoutParams webViewParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            0
+        );
+        webViewParams.weight = 1; // Ocupa todo o espaço disponível
+        
+        // Parâmetros para o banner
+        LinearLayout.LayoutParams adParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        
+        // Adiciona componentes baseado na posição configurada
+        if ("{{AD_POSITION}}".equals("top")) {
+            layout.addView(adView, adParams);
+            layout.addView(appView.getView(), webViewParams);
+        } else {
+            layout.addView(appView.getView(), webViewParams);
+            layout.addView(adView, adParams);
+        }
+
+        // Define esse layout como conteúdo da atividade
+        setContentView(layout);
+    }
+}

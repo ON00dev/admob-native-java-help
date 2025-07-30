@@ -1,4 +1,4 @@
-<plugin id="admob-native-java-help" version="1.1.0" xmlns="http://apache.org/cordova/ns/plugins/1.0">
+<plugin id="admob-native-java-help" version="1.2.0" xmlns="http://apache.org/cordova/ns/plugins/1.0">
   <name>admob-native-java-help</name>
   <description>Cordova plugin to add native AdMob blocks to MainActivity.java</description>
 
@@ -7,6 +7,11 @@
   <preference name="BANNER_AD_UNIT_ID" default="ca-app-pub-3940256099942544/6300978111" />
   <preference name="INTERSTITIAL_AD_UNIT_ID" default="ca-app-pub-3940256099942544/1033173712" />
   <preference name="APP_ID" default="ca-app-pub-3940256099942544~3347511713" />
+  <preference name="BANNER_SHOW_ON_PAGES" default="index.html" />
+  <preference name="BANNER_HIDE_ON_PAGES" default="" />
+  <preference name="CHECK_URL_INTERVAL" default="1000" />
+  <preference name="SETUP_DELAY" default="2000" />
+  <preference name="JS_INTERFACE_DELAY" default="3000" />
 
   <platform name="android">
     <hook type="before_plugin_install" src="scripts/pre_install.js" />

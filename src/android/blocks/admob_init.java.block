@@ -1,3 +1,8 @@
+android.util.Log.d("MainActivity", "onCreate chamado, launchUrl: " + launchUrl);
+
+// Adiciona interface JavaScript para anúncios intersticiais
+setupJavaScriptInterface();
+
 // Inicializa o AdMob
 android.util.Log.d("MainActivity", "Inicializando AdMob...");
 MobileAds.initialize(this, initializationStatus -> {
@@ -5,7 +10,7 @@ MobileAds.initialize(this, initializationStatus -> {
     
     // Carrega o anúncio intersticial
     loadInterstitialAd();
+    
+    // Verifica periodicamente se a URL mudou para páginas configuradas
+    checkForConfiguredPages();
 });
-
-// Adiciona interface JavaScript para anúncios intersticiais
-setupJavaScriptInterface();

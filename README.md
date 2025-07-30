@@ -1,6 +1,8 @@
 # 📦 admob-native-java-help
 
-Cordova plugin to dynamically inject **native AdMob blocks** into `MainActivity.java`, enabling banners and interstitials to overlay the Cordova WebView — with flexibility, without overwriting entire files, and respecting user choices.
+Cordova plugin to dynamically inject **native AdMob blocks** into `MainActivity.java`, enabling banners and interstitials to overlay the Cordova WebView — with advanced page control, flexible configuration, and complete JavaScript integration.
+
+**🆕 Version 1.2.0** introduces smart page detection, configurable preferences, and modular architecture for enhanced control over ad display.
 
 ---
 
@@ -24,6 +26,7 @@ cordova plugin add admob-native-java-help@latest
 
 ### ⚙️ Configuration Variables
 
+#### Core Variables
 | Variable | Required | Description |
 | --- | --- | --- |
 | AD_TYPE | ✅ | Ad type: `banner`, `interstitial` or `banner,interstitial` |
@@ -31,6 +34,15 @@ cordova plugin add admob-native-java-help@latest
 | BANNER_AD_UNIT_ID | ✅ (if using banner) | AdMob banner ID |
 | INTERSTITIAL_AD_UNIT_ID | ✅ (if using interstitial) | AdMob interstitial ID |
 | APP_ID | ✅ | App ID provided by AdMob |
+
+#### 🆕 Advanced Page Control (v1.2.0)
+| Variable | Default | Description |
+| --- | --- | --- |
+| BANNER_SHOW_ON_PAGES | `index.html` | Pages where banners should appear (comma-separated) |
+| BANNER_HIDE_ON_PAGES | `` (empty) | Pages where banners should be hidden (comma-separated) |
+| CHECK_URL_INTERVAL | `1000` | URL checking interval in milliseconds |
+| SETUP_DELAY | `2000` | Initial setup delay in milliseconds |
+| JS_INTERFACE_DELAY | `3000` | JavaScript interface setup delay in milliseconds |
 
 ### 📋 Installation Examples
 
@@ -54,7 +66,22 @@ cordova plugin add admob-native-java-help --variable AD_TYPE="interstitial" --va
 cordova plugin add admob-native-java-help --variable AD_TYPE="banner,interstitial" --variable AD_POSITION="bottom" --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-3940256099942544/1033173712" --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
 ```
 
-**5. Using your own production IDs:**
+**5. 🆕 Advanced Page Control (v1.2.0):**
+```bash
+cordova plugin add admob-native-java-help \
+  --variable AD_TYPE="banner,interstitial" \
+  --variable AD_POSITION="bottom" \
+  --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" \
+  --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-3940256099942544/1033173712" \
+  --variable APP_ID="ca-app-pub-3940256099942544~3347511713" \
+  --variable BANNER_SHOW_ON_PAGES="index.html,home.html,products.html" \
+  --variable BANNER_HIDE_ON_PAGES="login.html,register.html" \
+  --variable CHECK_URL_INTERVAL="500" \
+  --variable SETUP_DELAY="1500" \
+  --variable JS_INTERFACE_DELAY="2500"
+```
+
+**6. Using your own production IDs:**
 ```bash
 cordova plugin add admob-native-java-help --variable AD_TYPE="banner,interstitial" --variable AD_POSITION="top" --variable BANNER_AD_UNIT_ID="ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY" --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-XXXXXXXXXXXXXXXX/ZZZZZZZZZZ" --variable APP_ID="ca-app-pub-XXXXXXXXXXXXXXXX~WWWWWWWWWW"
 ```
@@ -62,68 +89,121 @@ cordova plugin add admob-native-java-help --variable AD_TYPE="banner,interstitia
 
 ## 📄 Usage Examples in Cordova WebView
 
-### 🎯 Interstitial Ads
-To display interstitial ads via JavaScript:
+### 🎯 Interstitial Ads (Enhanced v1.2.0)
+To display interstitial ads via the improved JavaScript interface:
 
 ```js
-// Check if the ad is loaded
-if (window.AndroidInterstitial && window.AndroidInterstitial.isAdLoaded()) {
-  console.log('Interstitial ad ready for display');
+// 🆕 New interface (v1.2.0) - Recommended
+if (window.InterstitialAdInterface) {
+  // Check if the ad is loaded
+  if (window.InterstitialAdInterface.isAdLoaded()) {
+    console.log('Interstitial ad ready for display');
+    
+    // Show the ad
+    window.InterstitialAdInterface.showAd();
+  } else {
+    console.log('Interstitial ad not yet loaded');
+  }
   
-  // Show the ad
-  window.AndroidInterstitial.showAd();
-} else {
-  console.log('Interstitial ad not yet loaded');
+  // Register callback when the ad is closed
+  window.InterstitialAdInterface.setOnAdClosedCallback('onInterstitialClosed');
 }
 
-// Register callback when the ad is closed
-if (window.AndroidInterstitial) {
-  window.AndroidInterstitial.setOnAdClosedCallback(function () {
-    console.log('Interstitial ad closed!');
-    // Here you can reload the ad or perform other actions
-  });
+// Callback function
+function onInterstitialClosed() {
+  console.log('Interstitial ad closed!');
+  // Ad will be automatically reloaded
+}
+
+// Legacy interface (still supported)
+if (window.AndroidInterstitial && window.AndroidInterstitial.isAdLoaded()) {
+  window.AndroidInterstitial.showAd();
 }
 ```
 
-### 🏷️ Native Banners
-Banners are displayed automatically when configured:
+### 🏷️ Smart Banner Control (New v1.2.0)
+Banners now support intelligent page detection:
 
 ```js
-// Banners appear automatically at the configured position
-// (top or bottom) without needing additional JavaScript code
+// Banners appear automatically based on page configuration
+// Configure during installation:
+// --variable BANNER_SHOW_ON_PAGES="index.html,home.html,products.html"
+// --variable BANNER_HIDE_ON_PAGES="login.html,register.html,splash.html"
 
-// Example of checking if the banner is active
-if (typeof window.AndroidInterstitial !== 'undefined') {
+// The plugin automatically monitors the current URL and shows/hides banners
+console.log('Current page:', window.location.href);
+
+// Example: Check if banner should be visible on current page
+if (typeof window.InterstitialAdInterface !== 'undefined') {
   console.log('Native AdMob plugin is active');
-  console.log('Banner will be displayed automatically');
+  console.log('Banner visibility controlled by page configuration');
 }
 ```
 
-### 🔄 Complete Integration Example
+### 🔄 Complete Integration Example (v1.2.0)
 ```js
 document.addEventListener('deviceready', function() {
-  console.log('Cordova ready - Initializing native AdMob');
+  console.log('Cordova ready - Initializing native AdMob v1.2.0');
   
-  // Check if the plugin is available
-  if (window.AndroidInterstitial) {
-    console.log('Native AdMob plugin loaded successfully');
-    
-    // Set callback for when the ad is closed
-    window.AndroidInterstitial.setOnAdClosedCallback(function() {
-      console.log('User closed the interstitial ad');
-      // Optional: reload the ad for the next display
-    });
-    
-    // Example: show ad after 5 seconds
-    setTimeout(function() {
-      if (window.AndroidInterstitial.isAdLoaded()) {
-        window.AndroidInterstitial.showAd();
-      }
-    }, 5000);
-  } else {
-    console.log('Native AdMob plugin not found');
-  }
+  // Wait for the enhanced interface to be available
+  const checkInterface = setInterval(() => {
+    if (window.InterstitialAdInterface) {
+      console.log('Enhanced AdMob interface loaded successfully');
+      clearInterval(checkInterface);
+      
+      // Set callback for when the ad is closed
+      window.InterstitialAdInterface.setOnAdClosedCallback('onAdClosed');
+      
+      // Example: show ad after user interaction
+      document.getElementById('showAdBtn').addEventListener('click', () => {
+        if (window.InterstitialAdInterface.isAdLoaded()) {
+          window.InterstitialAdInterface.showAd();
+        } else {
+          console.log('Ad not ready yet, please wait...');
+        }
+      });
+    }
+  }, 500);
+  
+  // Stop checking after 30 seconds
+  setTimeout(() => clearInterval(checkInterface), 30000);
 }, false);
+
+// Enhanced callback function
+function onAdClosed() {
+  console.log('User closed the interstitial ad');
+  // Dispatch custom event for better integration
+  document.dispatchEvent(new CustomEvent('admobAdClosed', {
+    detail: { type: 'interstitial', timestamp: Date.now() }
+  }));
+}
+
+// Listen to custom events
+document.addEventListener('admobAdClosed', (event) => {
+  console.log('AdMob event received:', event.detail);
+  // Perform actions after ad is closed
+});
+```
+
+### 📱 Using the Example Files
+The plugin now includes complete example files in the `example/` directory:
+
+```html
+<!-- Include the example JavaScript library -->
+<script src="path/to/admob-example.js"></script>
+
+<!-- Simple usage -->
+<button onclick="showAdMobInterstitial()">Show Ad</button>
+<button onclick="checkAdMobStatus()">Check Status</button>
+
+<script>
+// Using the AdMobManager class
+const manager = new AdMobManager();
+manager.showInterstitial(
+  () => console.log('Ad shown successfully'),
+  (error) => console.error('Error:', error)
+);
+</script>
 ```
 
 ## 🎛️ Settings and Behaviors
@@ -138,22 +218,55 @@ document.addEventListener('deviceready', function() {
 - **`AD_TYPE="interstitial"`**: Only interstitial ads (full screen)
 - **`AD_TYPE="banner,interstitial"`**: Both types available
 
+### 🆕 Smart Page Control (v1.2.0)
+- **`BANNER_SHOW_ON_PAGES`**: Comma-separated list of pages where banners should appear
+  - Example: `"index.html,home.html,products.html"`
+  - Default: `"index.html"`
+- **`BANNER_HIDE_ON_PAGES`**: Comma-separated list of pages where banners should be hidden
+  - Example: `"login.html,register.html,splash.html"`
+  - Takes priority over `BANNER_SHOW_ON_PAGES`
+  - Default: empty (no pages hidden)
+- **URL Monitoring**: Automatic detection of current page with configurable intervals
+
 ### ⚡ Automatic Behavior
-- **Banners**: Load and display automatically when starting the app
-- **Interstitials**: Load automatically, but need to be displayed via JavaScript
+- **Banners**: Load and display automatically based on page configuration
+- **Page Detection**: Monitors URL changes every `CHECK_URL_INTERVAL` milliseconds
+- **Interstitials**: Load automatically, displayed via enhanced JavaScript interface
 - **Native overlay**: Ads appear over the WebView without affecting the layout
+- **Smart Timing**: Configurable delays for setup and JavaScript interface initialization
+
+### 🔧 Timing Configuration
+- **`CHECK_URL_INTERVAL`** (default: 1000ms): How often to check the current URL
+- **`SETUP_DELAY`** (default: 2000ms): Initial delay before setting up ads
+- **`JS_INTERFACE_DELAY`** (default: 3000ms): Delay before JavaScript interface becomes available
 
 ## 📐 How the Plugin Works
 
-1. Automatically locates your MainActivity.java;
+### 🏗️ Modular Architecture (v1.2.0)
+The plugin now uses a modular approach with separate Java blocks:
 
-2. Injects only the necessary blocks (banner_top, banner_bottom, interstitial, js_interface);
+1. **`variables.java.block`**: Centralizes all configuration variables and IDs
+2. **`check_pages.java.block`**: Monitors URL changes and controls banner visibility
+3. **`setup_banner.java.block`**: Handles banner creation and positioning
+4. **`setup_js_interface.java.block`**: Configures the enhanced JavaScript interface
+5. **`interstitial_methods.java.block`**: Manages interstitial ad lifecycle
+6. **`admob_init.java.block`**: Initializes AdMob and coordinates all components
 
-3. Dynamically replaces placeholders {{BANNER_ID}}, {{INTERSTITIAL_ID}};
+### 🔄 Installation Process
+1. **Locates MainActivity.java** automatically in your Cordova project
+2. **Injects modular blocks** based on your configuration (`AD_TYPE`)
+3. **Replaces placeholders** with your actual AdMob IDs and preferences
+4. **Configures page detection** using your `BANNER_SHOW_ON_PAGES` settings
+5. **Sets up timing** according to your delay preferences
+6. **Ensures compatibility** with existing code and other AdMob plugins
+7. **Prevents duplications** via `// ADMOB_NATIVE_PLUGIN` marker
 
-4. Ensures WebView compatibility without overlapping existing content;
-
-5. Allows reapplication without duplications via // ADMOB_NATIVE_PLUGIN marker.
+### 🎯 Smart Features
+- **Page-aware banners**: Only show on configured pages
+- **URL monitoring**: Real-time detection of page changes
+- **Enhanced JavaScript interface**: Better callback system and error handling
+- **Automatic reloading**: Interstitial ads reload after being closed
+- **Conflict prevention**: Compatible with `admob-plus-cordova`
 
 ## 🛠️ Useful Commands
 ```bash
@@ -169,6 +282,38 @@ cordova run android
 | App ID | ca-app-pub-3940256099942544~3347511713 |
 | Banner | ca-app-pub-3940256099942544/6300978111 |
 | Interstitial | ca-app-pub-3940256099942544/1033173712 |
+
+## 🆕 What's New in v1.2.0
+
+### 🎯 Smart Page Control
+- **Selective Banner Display**: Configure exactly which pages should show banners
+- **Page Exclusion**: Hide banners on specific pages (login, splash, etc.)
+- **Real-time URL Monitoring**: Automatic detection of page changes
+- **Priority System**: `BANNER_HIDE_ON_PAGES` takes precedence over `BANNER_SHOW_ON_PAGES`
+
+### 🏗️ Enhanced Architecture
+- **Modular Java Blocks**: Separated functionality into maintainable components
+- **Centralized Configuration**: All variables managed in one place
+- **Better Error Handling**: Improved logging and debugging capabilities
+- **Timing Control**: Configurable delays for optimal performance
+
+### 📱 Developer Experience
+- **Complete Examples**: Ready-to-use HTML and JavaScript files
+- **AdMobManager Class**: Professional JavaScript library for ad management
+- **Enhanced Interface**: Improved callback system and event handling
+- **Comprehensive Documentation**: Detailed guides and troubleshooting
+
+### 🔧 Configuration Flexibility
+```bash
+# Example: Show banners only on main pages, hide on auth pages
+--variable BANNER_SHOW_ON_PAGES="index.html,home.html,products.html,about.html"
+--variable BANNER_HIDE_ON_PAGES="login.html,register.html,forgot-password.html"
+
+# Fine-tune timing for your app's needs
+--variable CHECK_URL_INTERVAL="500"    # Check URL every 500ms
+--variable SETUP_DELAY="1000"          # Start setup after 1 second
+--variable JS_INTERFACE_DELAY="2000"   # JavaScript ready after 2 seconds
+```
 
 ## 🔧 Troubleshooting
 
@@ -297,6 +442,14 @@ cordova prepare android
 - **Compatible with admob-plus-cordova** - no need to duplicate the SDK
 - **Doesn't overwrite the entire MainActivity** - safe for existing projects
 - **Native overlay** - ads don't interfere with WebView layout
+- **🆕 Page Configuration**: Use `BANNER_SHOW_ON_PAGES` and `BANNER_HIDE_ON_PAGES` for precise control
+- **🆕 Performance Tuning**: Adjust timing variables based on your app's loading characteristics
+
+### 🆕 Version 1.2.0 Considerations
+- **Backward Compatibility**: All existing configurations continue to work
+- **Enhanced Interface**: New `InterstitialAdInterface` is recommended over legacy `AndroidInterstitial`
+- **Example Integration**: Check the `example/` directory for implementation patterns
+- **Modular Updates**: Individual components can be updated without affecting others
 
 ## 📁 Plugin Structure
 
@@ -304,18 +457,32 @@ cordova prepare android
 admob-native-java-help/
 ├── plugin.xml              # Cordova plugin configuration
 ├── package.json            # Dependencies and metadata
+├── CHANGELOG.md            # Version history and changes
 ├── scripts/                # Installation scripts
-│   ├── pre_install.js      # Runs before installation
-│   └── after_install.js    # Injects code into MainActivity
+│   ├── pre_install.js      # Processes configuration variables
+│   ├── after_install.js    # Injects code into MainActivity
+│   └── userConfig.json     # Generated configuration file
 ├── src/android/            # Android source code
-│   ├── utils.js            # Utilities for injection
-│   └── blocks/             # Java code blocks
-│       ├── banner_bottom.java.block    # Bottom banner
-│       ├── banner_top.java.block       # Top banner
-│       ├── interstitial.java.block     # Interstitial ads
-│       └── js_interface.java.block     # JavaScript interface
-└── README.md               # Documentation
+│   ├── utils.js            # Enhanced utilities for injection
+│   └── blocks/             # 🆕 Modular Java code blocks (v1.2.0)
+│       ├── variables.java.block        # Configuration variables
+│       ├── check_pages.java.block      # URL monitoring logic
+│       ├── setup_banner.java.block     # Banner configuration
+│       ├── setup_js_interface.java.block # JavaScript interface
+│       ├── interstitial_methods.java.block # Interstitial management
+│       └── admob_init.java.block       # AdMob initialization
+├── example/                # 🆕 Complete usage examples (v1.2.0)
+│   ├── index.html          # HTML demo with UI
+│   ├── admob-example.js    # JavaScript library with AdMobManager
+│   └── README.md           # Detailed usage documentation
+└── README.md               # Main documentation
 ```
+
+### 🆕 New in v1.2.0
+- **Modular Java blocks**: Better organization and maintainability
+- **Example directory**: Complete working examples for developers
+- **Enhanced configuration**: Support for page-specific banner control
+- **Improved documentation**: Comprehensive guides and examples
 
 ## 👨‍💻 Author
 Developed by **ON00dev**  
