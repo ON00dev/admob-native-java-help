@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.0] - 2025-01-27
+## [1.1.0] - 2025-07-30
 
 ### Fixed
 - **CRITICAL BUG**: Fixed interstitial ads not displaying properly
