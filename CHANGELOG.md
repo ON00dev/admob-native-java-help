@@ -2,7 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.18] - 2024-12-19
+## [1.1.0] - 2025-01-27
+
+### Fixed
+- **CRITICAL BUG**: Fixed interstitial ads not displaying properly
+- **INTERSTITIAL IMPLEMENTATION**: Complete rewrite of interstitial.java.block based on working example
+- **JAVASCRIPT INTERFACE**: Fixed js_interface.java.block with proper callback handling
+- **ADMOB INITIALIZATION**: Added admob_init.java.block for proper AdMob SDK initialization
+- **IMPORTS**: Added missing imports for interstitial ad functionality in utils.js
+- **LIFECYCLE MANAGEMENT**: Implemented complete interstitial ad lifecycle (load, show, callbacks)
+
+### Added
+- **NEW BLOCK**: Created admob_init.java.block for AdMob initialization and JavaScript interface setup
+- **ENHANCED UTILS**: Updated utils.js to include admob_init.java.block for interstitial ads
+- **COMPLETE INTEGRATION**: Full integration between Java and JavaScript for interstitial ads
+- **ERROR HANDLING**: Proper error handling and logging for interstitial ad operations
+
+### Technical Details
+- Rewrote interstitial.java.block with complete AdMob SDK implementation
+- Fixed JavaScript interface implementation with proper callback handling
+- Added admob_init.java.block for proper AdMob initialization
+- Enhanced loadBlocks function to include AdMob initialization for interstitial ads
+- Added missing imports: MobileAds, InterstitialAd, InterstitialAdLoadCallback, FullScreenContentCallback, LoadAdError
+- Implemented complete interstitial ad lifecycle management with proper callbacks
+- Fixed timing issues with AdMob initialization and WebView readiness
+- Added proper error handling and logging throughout the interstitial ad flow
+
+## [1.0.19] - 2025-07-25
 
 ### Changed
 - **DOCUMENTATION**: Complete translation of README.md from Portuguese to English
@@ -16,9 +42,13 @@ All notable changes to this project will be documented in this file.
 - **CRITICAL BUG**: Fixed CLI variables not being saved correctly in userConfig.json
 - **CRITICAL BUG**: Fixed AD_POSITION variable being overridden by default value
 - **CRITICAL BUG**: Fixed undefined bannerId, interstitialId, and appId in installation logs
+- **CRITICAL BUG**: Fixed interstitial ads not working properly - complete implementation rewrite
 - **COMPATIBILITY**: Improved AndroidManifest.xml injection when admob-plus-cordova is present
 - **INSTALLATION**: Enhanced pre_install.js with proper fallback values and debug logging
 - **MANIFEST**: Fixed Application ID injection logic to work with existing plugins
+- **INTERSTITIAL**: Fixed incomplete interstitial.java.block implementation
+- **JAVASCRIPT INTERFACE**: Fixed missing JavaScript interface setup for interstitial ads
+- **ADMOB INITIALIZATION**: Fixed missing AdMob initialization in interstitial implementation
 
 ### Added
 - **TROUBLESHOOTING**: Comprehensive troubleshooting section in README.md
@@ -41,8 +71,15 @@ All notable changes to this project will be documented in this file.
 - Fixed variable processing in pre_install.js to prevent undefined values
 - Enhanced AndroidManifest.xml injection logic for better plugin compatibility
 - Added comprehensive troubleshooting guide with common problems and solutions
+- Completely rewrote interstitial.java.block with proper AdMob SDK implementation
+- Added missing imports for InterstitialAd, InterstitialAdLoadCallback, FullScreenContentCallback
+- Created admob_init.java.block for proper AdMob initialization and JavaScript interface setup
+- Fixed JavaScript interface implementation with proper callback handling
+- Enhanced loadBlocks function to include AdMob initialization for interstitial ads
+- Implemented complete interstitial ad lifecycle management (load, show, callbacks)
+- Added proper error handling and logging for interstitial ad operations
 
-## [1.0.17] - 2024-12-19
+## [1.0.18] - 2025-07-25
 
 ### Fixed
 - **COMPATIBILIDADE CRÍTICA**: Resolvido conflito de duplicação com plugin admob-plus-cordova
@@ -65,7 +102,7 @@ All notable changes to this project will be documented in this file.
 - Resolve conflitos de AdActivity duplicada que causavam falha na compilação
 - Permite uso conjunto: admob-plus-cordova (SDK base) + admob-native-java-help (overlay nativo)
 
-## [1.0.16] - 2024-12-19
+## [1.0.17] - 2025-07-25
 
 ### Fixed
 - **CRITICAL BUG**: Fixed app crash caused by missing AdMob Application ID in AndroidManifest.xml
@@ -82,7 +119,7 @@ All notable changes to this project will be documented in this file.
 - The plugin now automatically injects the required meta-data tag during installation
 - This resolves the crash that occurred when opening apps with AdMob integration
 
-## [1.0.15] - 2024-12-19
+## [1.0.16] - 2025-07-25
 
 ### Fixed
 - **CRITICAL BUG**: Fixed app crash caused by missing AdMob Application ID in AndroidManifest.xml
@@ -95,7 +132,7 @@ All notable changes to this project will be documented in this file.
 - The plugin now automatically injects the required meta-data tag during installation
 - This resolves the crash that occurred when opening apps with AdMob integration
 
-## [1.0.14] - 2024-12-19
+## [1.0.15] - 2025-07-25
 ### [OK] Melhorias
 - **Documentação aprimorada**: Melhorada a clareza das instruções de uso no README
 - **Validação de funcionamento**: Confirmado que todas as injeções automáticas funcionam corretamente
@@ -107,7 +144,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.0.13] - 2024-12-19
+## [1.0.14] - 2025-07-25
 ### [OK] Melhorias
 - **Injeção automática de imports**: Plugin agora injeta automaticamente os imports necessários do AdMob no MainActivity.java
 - **Imports incluídos automaticamente**:
@@ -124,7 +161,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.0.12] - 2024-12-19
+## [1.0.13] - 2025-07-25
 
 ### 🔧 Dependency Management
 - **Automatic AdMob dependency**: Added automatic inclusion of Google Mobile Ads SDK (play-services-ads:22.6.0)
@@ -143,7 +180,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.0.11] - 2024-12-19
+## [1.0.11] - 2025-07-25
 
 ### 🎨 UI/UX Improvements
 - **Emoji replacement**: Replaced all ✅ emojis with [OK] text for better compatibility
@@ -160,7 +197,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.0.10] - 2024-12-19
+## [1.0.10] - 2025-07-25
 
 ### Internationalization
 - **English Translation**: All logs, comments, and console messages translated from Portuguese to English
@@ -175,7 +212,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.0.9] - 2024-12-19
+## [1.0.9] - 2025-07-25
 
 ### 🚀 Simplificação Importante
 - **Detecção direta do package**: Substituída busca recursiva por leitura direta do `config.xml`
@@ -191,7 +228,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.0.8] - 2024-12-19
+## [1.0.8] - 2025-07-25
 
 ### 🐛 Correções Críticas
 - **Corrigida busca recursiva do MainActivity.java**: A função `findPackageDir` agora busca recursivamente pelo arquivo `MainActivity.java` em toda a estrutura de diretórios do pacote
@@ -210,7 +247,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.0.7] - 2024-12-19
+## [1.0.7] - 2025-07-25
 
 ### 🐛 Correções
 - **Corrigido erro de caminho duplicado**: Removida concatenação dupla de `MainActivity.java` na função `findPackageDir`
@@ -235,7 +272,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.0.6] - 2024-12-19
+## [1.0.6] - 2025-07-25
 
 ### ✨ Funcionalidades
 - Plugin inicial para injeção de código AdMob no MainActivity.java

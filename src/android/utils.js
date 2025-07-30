@@ -51,7 +51,12 @@ function injectImports(code) {
     'import android.widget.LinearLayout;',
     'import com.google.android.gms.ads.AdRequest;',
     'import com.google.android.gms.ads.AdSize;',
-    'import com.google.android.gms.ads.AdView;'
+    'import com.google.android.gms.ads.AdView;',
+    'import com.google.android.gms.ads.MobileAds;',
+    'import com.google.android.gms.ads.interstitial.InterstitialAd;',
+    'import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;',
+    'import com.google.android.gms.ads.FullScreenContentCallback;',
+    'import com.google.android.gms.ads.LoadAdError;'
   ];
 
   // Find the last import statement
@@ -111,6 +116,10 @@ function loadBlocks(config) {
   }
 
   if (config.adType.includes('interstitial')) {
+    // Adiciona inicialização do AdMob
+    const admobInit = fs.readFileSync(path.join(blockDir, `admob_init.java.block`), 'utf8');
+    blocks.push(admobInit);
+    
     let inter = fs.readFileSync(path.join(blockDir, `interstitial.java.block`), 'utf8');
     inter = inter.replace(/{{INTERSTITIAL_ID}}/g, config.interstitialId);
     blocks.push(inter);

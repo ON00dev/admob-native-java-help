@@ -1,0 +1,11 @@
+// Inicializa o AdMob
+android.util.Log.d("MainActivity", "Inicializando AdMob...");
+MobileAds.initialize(this, initializationStatus -> {
+    android.util.Log.d("MainActivity", "AdMob inicializado com sucesso");
+    
+    // Carrega o anúncio intersticial
+    loadInterstitialAd();
+});
+
+// Adiciona interface JavaScript para anúncios intersticiais
+setupJavaScriptInterface();
