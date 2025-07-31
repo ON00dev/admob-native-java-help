@@ -2,9 +2,34 @@
 
 Cordova plugin to dynamically inject **native AdMob blocks** into `MainActivity.java`, enabling banners and interstitials to overlay the Cordova WebView — with advanced page control, flexible configuration, and complete JavaScript integration.
 
-**🆕 Version 1.2.0** introduces smart page detection, configurable preferences, and modular architecture for enhanced control over ad display.
+**🆕 Version 1.2.1** melhora a estabilidade do código, corrige erros de sintaxe e aprimora a compatibilidade com o SDK mais recente do AdMob. Esta versão inclui tratamento adequado de anotações, melhor recuperação de erros e inicialização otimizada com atraso configurável.
 
 ---
+
+## 📋 Changelog
+
+### Version 1.2.1
+- ✅ **INICIALIZAÇÃO OTIMIZADA**: Implementação de inicialização do AdMob com atraso configurável
+  - Nova preferência `ADMOB_INIT_DELAY` para controlar o atraso de inicialização
+  - Novo bloco `setup_admob_with_delay.java.block` para inicialização com atraso
+  - Bloco dedicado `admob_init.java.block` para inicialização do AdMob
+- ✅ **CORREÇÕES**:
+  - Corrigidos erros de sintaxe nas injeções em MainActivity.java
+  - Movidas as declarações de variáveis AdMob para dentro da classe MainActivity
+  - Removidas declarações duplicadas de variáveis
+  - Adicionadas as importações necessárias para as classes do AdMob
+  - Corrigida a estrutura da classe adicionando chave de fechamento faltante
+  - Adicionadas anotações @NonNull para melhor compatibilidade com o SDK mais recente
+- ✅ **MELHORIAS**:
+  - Implementados os métodos completos para funcionalidade do AdMob
+  - Melhorado o tratamento de erros e exceções
+  - Otimizada a interface JavaScript para anúncios intersticiais
+  - Atualizada a documentação e exemplos
+
+### Version 1.2.0
+- ✅ Introduzida detecção inteligente de páginas
+- ✅ Adicionadas preferências configuráveis
+- ✅ Implementada arquitetura modular para controle aprimorado da exibição de anúncios
 
 ## ⚠️ Mandatory Requirements
 
@@ -35,7 +60,7 @@ cordova plugin add admob-native-java-help@latest
 | INTERSTITIAL_AD_UNIT_ID | ✅ (if using interstitial) | AdMob interstitial ID |
 | APP_ID | ✅ | App ID provided by AdMob |
 
-#### 🆕 Advanced Page Control (v1.2.0)
+#### 🆕 Advanced Page Control (v1.2.0+)
 | Variable | Default | Description |
 | --- | --- | --- |
 | BANNER_SHOW_ON_PAGES | `index.html` | Pages where banners should appear (comma-separated) |
@@ -43,6 +68,7 @@ cordova plugin add admob-native-java-help@latest
 | CHECK_URL_INTERVAL | `1000` | URL checking interval in milliseconds |
 | SETUP_DELAY | `2000` | Initial setup delay in milliseconds |
 | JS_INTERFACE_DELAY | `3000` | JavaScript interface setup delay in milliseconds |
+| ADMOB_INIT_DELAY | `1000` | AdMob SDK initialization delay in milliseconds (v1.2.1+) |
 
 ### 📋 Installation Examples
 
@@ -66,7 +92,7 @@ cordova plugin add admob-native-java-help --variable AD_TYPE="interstitial" --va
 cordova plugin add admob-native-java-help --variable AD_TYPE="banner,interstitial" --variable AD_POSITION="bottom" --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-3940256099942544/1033173712" --variable APP_ID="ca-app-pub-3940256099942544~3347511713"
 ```
 
-**5. 🆕 Advanced Page Control (v1.2.0):**
+**5. 🆕 Advanced Page Control (v1.2.1):**
 ```bash
 cordova plugin add admob-native-java-help \
   --variable AD_TYPE="banner,interstitial" \
@@ -78,7 +104,8 @@ cordova plugin add admob-native-java-help \
   --variable BANNER_HIDE_ON_PAGES="login.html,register.html" \
   --variable CHECK_URL_INTERVAL="500" \
   --variable SETUP_DELAY="1500" \
-  --variable JS_INTERFACE_DELAY="2500"
+  --variable JS_INTERFACE_DELAY="2500" \
+  --variable ADMOB_INIT_DELAY="2000"
 ```
 
 **6. Using your own production IDs:**

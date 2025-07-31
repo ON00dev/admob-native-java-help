@@ -1,0 +1,85 @@
+/**
+     * Verifica periodicamente a URL atual para configurar o banner AdMob
+     */
+    private void checkForConfiguredPages() {
+        try {
+            // Obtém a URL atual
+            webView.evaluateJavascript("window.location.href", new android.webkit.ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String url) {
+                    if (url != null) {
+                        // Remove as aspas da string
+                        url = url.replaceAll("\\\"", "");
+                        
+                        // Verifica se a URL mudou
+                        if (!url.equals(currentUrl)) {
+                            currentUrl = url;
+                            Log.d(TAG, "URL atual: " + currentUrl);
+                            
+                            // Verifica se deve exibir ou ocultar o banner nesta página
+                            if (shouldShowBannerOnPage(currentUrl)) {
+                                showBanner();
+                            } else {
+                                hideBanner();
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao verificar URL: " + e.getMessage());
+        }
+        
+        // Agenda a próxima verificação
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                checkForConfiguredPages();
+            }
+        }, URL_CHECK_DELAY);
+    }
+    
+    /**
+     * Verifica se o banner deve ser exibido na página atual
+     */
+    private boolean shouldShowBannerOnPage(String url) {
+        try {
+            // Se não houver configuração, exibe em todas as páginas
+            if ((BANNER_SHOW_ON_PAGES == null || BANNER_SHOW_ON_PAGES.isEmpty()) && 
+                (BANNER_HIDE_ON_PAGES == null || BANNER_HIDE_ON_PAGES.isEmpty())) {
+                return true;
+            }
+            
+            // Verifica as páginas para ocultar (tem prioridade)
+            if (BANNER_HIDE_ON_PAGES != null && !BANNER_HIDE_ON_PAGES.isEmpty()) {
+                String[] hidePages = BANNER_HIDE_ON_PAGES.split(",");
+                for (String page : hidePages) {
+                    page = page.trim();
+                    if (!page.isEmpty() && url.contains(page)) {
+                        Log.d(TAG, "Banner ocultado na página: " + url);
+                        return false;
+                    }
+                }
+            }
+            
+            // Verifica as páginas para exibir
+            if (BANNER_SHOW_ON_PAGES != null && !BANNER_SHOW_ON_PAGES.isEmpty()) {
+                String[] showPages = BANNER_SHOW_ON_PAGES.split(",");
+                for (String page : showPages) {
+                    page = page.trim();
+                    if (!page.isEmpty() && url.contains(page)) {
+                        Log.d(TAG, "Banner exibido na página: " + url);
+                        return true;
+                    }
+                }
+                // Se especificou páginas para exibir e não encontrou nenhuma, oculta
+                return false;
+            }
+            
+            // Por padrão, exibe o banner
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao verificar página para banner: " + e.getMessage());
+            return false;
+        }
+    }

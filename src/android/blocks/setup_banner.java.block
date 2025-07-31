@@ -1,3 +1,4 @@
+// Método para configurar o banner do AdMob
 private void setupAdMobBanner() {
     // Evita configurar o AdMob múltiplas vezes
     if (adMobSetup) {
@@ -7,16 +8,18 @@ private void setupAdMobBanner() {
     
     android.util.Log.d("MainActivity", "Configurando banner AdMob");
     
-    // Cria o banner AdMob
+    // Cria o AdView
     AdView adView = new AdView(this);
-    adView.setAdSize(AdSize.BANNER);
     adView.setAdUnitId(BANNER_AD_UNIT_ID);
+    adView.setAdSize(AdSize.BANNER);
+    
+    // Carrega o anúncio
     AdRequest adRequest = new AdRequest.Builder().build();
     adView.loadAd(adRequest);
-
+    
     // Obtém a WebView do Cordova
     if (appView != null && appView.getView() != null) {
-        // Cria um layout vertical que contenha WebView + AdView
+        // Cria um novo layout para conter a WebView e o banner
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setBackgroundColor(0xff000000); // Fundo preto padrão

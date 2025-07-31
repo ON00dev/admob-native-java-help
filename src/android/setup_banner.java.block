@@ -1,0 +1,83 @@
+/**
+     * Configura o banner do AdMob
+     */
+    private void setupBanner() {
+        try {
+            Log.d(TAG, "Configurando banner AdMob");
+            
+            // Cria o AdView
+            adView = new AdView(this);
+            adView.setAdUnitId(BANNER_AD_UNIT_ID);
+            adView.setAdSize(AdSize.BANNER);
+            
+            // Cria os parâmetros de layout
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            
+            // Define a posição do banner
+            if (BANNER_POSITION.equals("bottom")) {
+                params.gravity = android.view.Gravity.BOTTOM;
+            } else {
+                params.gravity = android.view.Gravity.TOP;
+            }
+            
+            // Adiciona o AdView ao layout
+            LinearLayout layout = new LinearLayout(this);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.addView(adView, params);
+            
+            // Adiciona o layout ao conteúdo da atividade
+            addContentView(layout, new LayoutParams(
+                    LayoutParams.MATCH_PARENT,
+                    LayoutParams.MATCH_PARENT));
+            
+            // Carrega o anúncio
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+            
+            // Oculta o banner inicialmente
+            hideBanner();
+            
+            Log.d(TAG, "Banner AdMob configurado com sucesso");
+        } catch (Exception e) {
+            Log.e(TAG, "Erro ao configurar banner AdMob: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Exibe o banner
+     */
+    private void showBanner() {
+        if (adView != null && !isBannerVisible) {
+            Log.d(TAG, "Exibindo banner AdMob");
+            adView.setVisibility(android.view.View.VISIBLE);
+            isBannerVisible = true;
+        }
+    }
+    
+    /**
+     * Oculta o banner
+     */
+    private void hideBanner() {
+        if (adView != null && isBannerVisible) {
+            Log.d(TAG, "Ocultando banner AdMob");
+            adView.setVisibility(android.view.View.GONE);
+            isBannerVisible = false;
+        }
+    }
+    
+    /**
+     * Configura o verificador de páginas para exibir/ocultar o banner
+     */
+    private void setupPageChecker() {
+        Log.d(TAG, "Configurando verificador de páginas para o banner");
+        
+        // Inicia a verificação periódica de páginas
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                checkForConfiguredPages();
+            }
+        }, BANNER_SETUP_DELAY);
+    }

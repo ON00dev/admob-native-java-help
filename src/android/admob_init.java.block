@@ -1,0 +1,26 @@
+// Atraso para inicialização do AdMob (em milissegundos)
+    private static final int ADMOB_INIT_DELAY = 1000;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        
+        try {
+            Log.d(TAG, "MainActivity.onStart()");
+            
+            // Inicializa o AdMob com atraso
+            setupAdMobWithDelay();
+            
+            // Configura a verificação periódica de páginas para o banner
+            if ("{{AD_TYPE}}".equals("banner") || "{{AD_TYPE}}".equals("both")) {
+                setupPageChecker();
+            }
+            
+            // Configura a interface JavaScript para o intersticial
+            if ("{{AD_TYPE}}".equals("interstitial") || "{{AD_TYPE}}".equals("both")) {
+                setupJavaScriptInterface();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Erro em onStart: " + e.getMessage());
+        }
+    }

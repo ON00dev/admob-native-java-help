@@ -1,4 +1,4 @@
-<plugin id="admob-native-java-help" version="1.2.0" xmlns="http://apache.org/cordova/ns/plugins/1.0">
+<plugin id="admob-native-java-help" version="1.2.1" xmlns="http://apache.org/cordova/ns/plugins/1.0">
   <name>admob-native-java-help</name>
   <description>Cordova plugin to add native AdMob blocks to MainActivity.java</description>
 
@@ -12,6 +12,7 @@
   <preference name="CHECK_URL_INTERVAL" default="1000" />
   <preference name="SETUP_DELAY" default="2000" />
   <preference name="JS_INTERFACE_DELAY" default="3000" />
+  <preference name="ADMOB_INIT_DELAY" default="1000" />
 
   <platform name="android">
     <hook type="before_plugin_install" src="scripts/pre_install.js" />

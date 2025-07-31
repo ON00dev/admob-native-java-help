@@ -47,17 +47,19 @@ function injectIntoMainActivity(filePath, config) {
 }
 
 function injectImports(code) {
-  const requiredImports = [
-    'import android.widget.LinearLayout;',
-    'import com.google.android.gms.ads.AdRequest;',
-    'import com.google.android.gms.ads.AdSize;',
-    'import com.google.android.gms.ads.AdView;',
-    'import com.google.android.gms.ads.MobileAds;',
-    'import com.google.android.gms.ads.interstitial.InterstitialAd;',
-    'import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;',
-    'import com.google.android.gms.ads.FullScreenContentCallback;',
-    'import com.google.android.gms.ads.LoadAdError;'
-  ];
+  // Carrega as importações do arquivo de bloco
+  const blockDir = path.join(__dirname, 'blocks');
+  const importFilePath = path.join(blockDir, 'imports.java.block');
+  
+  // Verifica se o arquivo de importações existe
+  if (!fs.existsSync(importFilePath)) {
+    console.log('[ERRO] Arquivo de importações não encontrado:', importFilePath);
+    return code;
+  }
+  
+  // Lê as importações do arquivo
+  const importContent = fs.readFileSync(importFilePath, 'utf8');
+  const requiredImports = importContent.split('\n').filter(line => line.trim().length > 0);
 
   // Find the last import statement
   const importRegex = /import\s+[^;]+;/g;
@@ -108,16 +110,25 @@ function loadBlocks(config) {
   const blockDir = path.join(__dirname, 'blocks');
   const blocks = [];
 
+  // Carrega os blocos de código
   // Adiciona variáveis sempre
   let variables = fs.readFileSync(path.join(blockDir, 'variables.java.block'), 'utf8');
-  variables = variables.replace(/{{INTERSTITIAL_AD_UNIT_ID}}/g, config.interstitialId);
-  variables = variables.replace(/{{BANNER_AD_UNIT_ID}}/g, config.bannerId);
-  variables = variables.replace(/{{BANNER_SHOW_ON_PAGES}}/g, config.bannerShowOnPages || 'index.html');
-  variables = variables.replace(/{{BANNER_HIDE_ON_PAGES}}/g, config.bannerHideOnPages || '');
-  variables = variables.replace(/{{CHECK_URL_INTERVAL}}/g, config.checkUrlInterval || '1000');
-  variables = variables.replace(/{{SETUP_DELAY}}/g, config.setupDelay || '2000');
-  variables = variables.replace(/{{JS_INTERFACE_DELAY}}/g, config.jsInterfaceDelay || '3000');
+  variables = variables.replace(/\{\{APPLICATION_ID\}\}/g, config.appId);
+  variables = variables.replace(/\{\{INTERSTITIAL_AD_UNIT_ID\}\}/g, config.interstitialId);
+  variables = variables.replace(/\{\{BANNER_AD_UNIT_ID\}\}/g, config.bannerId);
+  variables = variables.replace(/\{\{BANNER_POSITION\}\}/g, config.adPosition);
+  variables = variables.replace(/\{\{BANNER_SHOW_ON_PAGES\}\}/g, config.bannerShowOnPages || 'index.html');
+  variables = variables.replace(/\{\{BANNER_HIDE_ON_PAGES\}\}/g, config.bannerHideOnPages || '');
+  variables = variables.replace(/\{\{URL_CHECK_DELAY\}\}/g, config.checkUrlInterval || '1000');
+  variables = variables.replace(/\{\{BANNER_SETUP_DELAY\}\}/g, config.setupDelay || '2000');
+  variables = variables.replace(/\{\{JS_INTERFACE_DELAY\}\}/g, config.jsInterfaceDelay || '3000');
+  variables = variables.replace(/\{\{ADMOB_INIT_DELAY\}\}/g, config.admobInitDelay || '1000');
   blocks.push(variables);
+
+  // Adiciona método de inicialização com delay
+  let setupAdmobWithDelay = fs.readFileSync(path.join(blockDir, 'setup_admob_with_delay.java.block'), 'utf8');
+  setupAdmobWithDelay = setupAdmobWithDelay.replace(/\{\{AD_TYPE\}\}/g, config.adType);
+  blocks.push(setupAdmobWithDelay);
 
   if (config.adType.includes('banner')) {
     // Adiciona métodos de verificação de páginas
@@ -138,11 +149,12 @@ function loadBlocks(config) {
     // Adiciona métodos do intersticial
     const interstitialMethods = fs.readFileSync(path.join(blockDir, 'interstitial_methods.java.block'), 'utf8');
     blocks.push(interstitialMethods);
-    
-    // Adiciona inicialização do AdMob
-    const admobInit = fs.readFileSync(path.join(blockDir, 'admob_init.java.block'), 'utf8');
-    blocks.push(admobInit);
   }
+  
+  // Adiciona inicialização do AdMob (para todos os tipos de anúncio)
+  let admobInit = fs.readFileSync(path.join(blockDir, 'admob_init.java.block'), 'utf8');
+  admobInit = admobInit.replace(/\{\{AD_TYPE\}\}/g, config.adType);
+  blocks.push(admobInit);
 
   return blocks.join('\n\n');
 }

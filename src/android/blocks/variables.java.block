@@ -1,13 +1,17 @@
+// Variáveis para controle do AdMob
 private boolean adMobSetup = false;
-private InterstitialAd mInterstitialAd;
+private InterstitialAd mInterstitialAd = null;
+
 // IDs dos anúncios AdMob
 private static final String INTERSTITIAL_AD_UNIT_ID = "{{INTERSTITIAL_AD_UNIT_ID}}";
 private static final String BANNER_AD_UNIT_ID = "{{BANNER_AD_UNIT_ID}}";
+
 // Configurações de páginas
 private static final String BANNER_SHOW_ON_PAGES = "{{BANNER_SHOW_ON_PAGES}}";
 private static final String BANNER_HIDE_ON_PAGES = "{{BANNER_HIDE_ON_PAGES}}";
 private static final int CHECK_URL_INTERVAL = {{CHECK_URL_INTERVAL}};
 private static final int SETUP_DELAY = {{SETUP_DELAY}};
 private static final int JS_INTERFACE_DELAY = {{JS_INTERFACE_DELAY}};
+
 // Variável para armazenar o callback JavaScript
 private String jsCallbackFunction = null;

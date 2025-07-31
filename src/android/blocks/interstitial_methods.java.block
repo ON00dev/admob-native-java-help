@@ -1,16 +1,17 @@
 // Método para carregar anúncio intersticial
 private void loadInterstitialAd() {
+    android.util.Log.d("MainActivity", "Carregando anúncio intersticial");
     AdRequest adRequest = new AdRequest.Builder().build();
     
     InterstitialAd.load(this, INTERSTITIAL_AD_UNIT_ID, adRequest,
         new InterstitialAdLoadCallback() {
             @Override
-            public void onAdLoaded(InterstitialAd interstitialAd) {
-                android.util.Log.d("MainActivity", "Anúncio intersticial carregado");
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                android.util.Log.d("MainActivity", "Anúncio intersticial carregado com sucesso");
                 mInterstitialAd = interstitialAd;
                 
                 // Configura callbacks para eventos do anúncio
-                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                     @Override
                     public void onAdClicked() {
                         android.util.Log.d("MainActivity", "Anúncio intersticial clicado");
@@ -35,14 +36,16 @@ private void loadInterstitialAd() {
                     }
                     
                     @Override
-                    public void onAdFailedToShowFullScreenContent(com.google.android.gms.ads.AdError adError) {
+                    public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
                         android.util.Log.e("MainActivity", "Falha ao exibir anúncio intersticial: " + adError.getMessage());
                         mInterstitialAd = null;
+                        // Tenta carregar novamente
+                        loadInterstitialAd();
                     }
                     
                     @Override
                     public void onAdImpression() {
-                        android.util.Log.d("MainActivity", "Anúncio intersticial exibido");
+                        android.util.Log.d("MainActivity", "Anúncio intersticial registrou impressão");
                     }
                     
                     @Override
@@ -53,9 +56,14 @@ private void loadInterstitialAd() {
             }
             
             @Override
-            public void onAdFailedToLoad(LoadAdError loadAdError) {
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 android.util.Log.e("MainActivity", "Falha ao carregar anúncio intersticial: " + loadAdError.getMessage());
                 mInterstitialAd = null;
+                
+                // Tenta novamente após um atraso
+                new android.os.Handler().postDelayed(() -> {
+                    loadInterstitialAd();
+                }, 60000); // Tenta novamente após 1 minuto
             }
         });
 }
@@ -67,7 +75,7 @@ public void showInterstitialAd() {
             android.util.Log.d("MainActivity", "Exibindo anúncio intersticial");
             mInterstitialAd.show(MainActivity.this);
         } else {
-            android.util.Log.d("MainActivity", "Anúncio intersticial não está carregado");
+            android.util.Log.d("MainActivity", "Anúncio intersticial não está carregado, tentando carregar");
             // Tenta carregar novamente
             loadInterstitialAd();
         }

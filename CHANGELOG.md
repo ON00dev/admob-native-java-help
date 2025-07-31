@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2023-11-30
+
+### Added
+- **INICIALIZAÇÃO OTIMIZADA**: Implementação de inicialização do AdMob com atraso configurável
+  - `ADMOB_INIT_DELAY`: Nova preferência para controlar o atraso de inicialização do AdMob
+  - `setup_admob_with_delay.java.block`: Novo bloco para inicialização com atraso
+  - `admob_init.java.block`: Bloco dedicado para inicialização do AdMob
+
+### Fixed
+- Corrigidos erros de sintaxe nas injeções em MainActivity.java
+- Movidas as declarações de variáveis AdMob para dentro da classe MainActivity
+- Removidas declarações duplicadas de variáveis
+- Adicionadas as importações necessárias para as classes do AdMob
+- Corrigida a estrutura da classe adicionando chave de fechamento faltante no método setupAdMobBanner
+- Adicionadas anotações @NonNull para melhor compatibilidade com o SDK mais recente
+- Melhorada a recuperação de erros ao carregar anúncios
+
+### Improved
+- Implementados os métodos completos para funcionalidade do AdMob
+- Melhorado o tratamento de erros e exceções
+- Otimizada a interface JavaScript para anúncios intersticiais
+- Atualizada a documentação e exemplos
+
 ## [1.2.0] - 2025-07-30
 
 ### Added
