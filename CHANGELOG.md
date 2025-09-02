@@ -2,13 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.2.1] - 2023-11-30
+## [1.2.2] - 2025-09-02
 
 ### Added
-- **INICIALIZAÇÃO OTIMIZADA**: Implementação de inicialização do AdMob com atraso configurável
-  - `ADMOB_INIT_DELAY`: Nova preferência para controlar o atraso de inicialização do AdMob
-  - `setup_admob_with_delay.java.block`: Novo bloco para inicialização com atraso
-  - `admob_init.java.block`: Bloco dedicado para inicialização do AdMob
+- **COMPREHENSIVE DOCUMENTATION**: Complete documentation for page detection and folder structures
+  - `PAGE_DETECTION.md`: Technical documentation explaining how the plugin detects HTML pages
+  - `FOLDER_EXAMPLES.md`: Practical examples with different folder structures and configurations
+  - Detailed explanations of URL monitoring mechanism and real-time detection
+  - Advanced configuration examples for complex project structures
+
+### Enhanced
+- **DEVELOPER EXPERIENCE**: Improved documentation with practical examples
+  - Real-world scenarios for games, enterprise apps, and e-commerce
+  - Best practices for folder organization and configuration
+  - Debug tips and troubleshooting guides
+  - Performance optimization recommendations
+
+## [1.2.1] - 2025-07-30
+
+### Added
+- **OPTIMIZED INITIALIZATION**: Implementation of AdMob initialization with configurable delay
+  - `ADMOB_INIT_DELAY`: New preference to control AdMob initialization delay
+  - `setup_admob_with_delay.java.block`: New block for delayed initialization
+  - `admob_init.java.block`: Dedicated block for AdMob initialization
 
 ### Fixed
 - Corrigidos erros de sintaxe nas injeções em MainActivity.java

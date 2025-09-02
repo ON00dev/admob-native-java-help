@@ -2,34 +2,128 @@
 
 Cordova plugin to dynamically inject **native AdMob blocks** into `MainActivity.java`, enabling banners and interstitials to overlay the Cordova WebView — with advanced page control, flexible configuration, and complete JavaScript integration.
 
-**🆕 Version 1.2.1** melhora a estabilidade do código, corrige erros de sintaxe e aprimora a compatibilidade com o SDK mais recente do AdMob. Esta versão inclui tratamento adequado de anotações, melhor recuperação de erros e inicialização otimizada com atraso configurável.
+**🆕 Version 1.2.2** includes comprehensive documentation for page detection and folder structures, with practical examples and best practices for any project architecture.
+
+## 📚 Documentation
+
+- **[📋 Installation Guide](INSTALLATION_GUIDE.md)** - Complete installation and configuration guide
+- **[🧠 Page Detection](PAGE_DETECTION.md)** - Technical documentation on how the plugin detects HTML pages
+- **[📁 Folder Examples](FOLDER_EXAMPLES.md)** - Practical examples with different folder structures
+- **[📝 Changelog](CHANGELOG.md)** - Version history and changes
+
+## ✨ Key Features
+
+### 🧠 Smart Page Detection
+- **Real-time URL monitoring** with configurable intervals
+- **Flexible folder structure support** - works with any project organization
+- **Granular control** - specify individual files or entire folders
+- **Priority system** - hide pages take precedence over show pages
+
+### 🎯 Advanced Configuration
+- **Multiple ad types** - banner, interstitial, or both
+- **Flexible positioning** - top or bottom banner placement
+- **Timing control** - configurable delays for optimal performance
+- **Page-specific banners** - show/hide based on current page
+
+### 🔧 Developer Experience
+- **Complete examples** - ready-to-use HTML and JavaScript files
+- **Comprehensive documentation** - detailed guides for any scenario
+- **Debug support** - detailed logging for troubleshooting
+- **Modular architecture** - clean, maintainable code structure
+
+### 📱 Production Ready
+- **Google AdMob test IDs** included for development
+- **Easy migration** to production IDs
+- **Error handling** - robust error recovery
+- **Performance optimized** - minimal impact on app performance
+
+## 🚀 Quick Production Guide
+
+### Simple Installation
+```bash
+# 1. Add Android platform
+cordova platform add android
+
+# 2. Install plugin with your configuration
+cordova plugin add admob-native-java-help \
+  --variable AD_TYPE="banner,interstitial" \
+  --variable AD_POSITION="bottom" \
+  --variable BANNER_AD_UNIT_ID="ca-app-pub-3940256099942544/6300978111" \
+  --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-3940256099942544/1033173712" \
+  --variable APP_ID="ca-app-pub-3940256099942544~3347511713" \
+  --variable BANNER_SHOW_ON_PAGES="index.html,home.html"
+
+# 3. Build and test
+cordova build android
+cordova run android
+```
+
+### JavaScript Usage
+```javascript
+// Show interstitial ad
+if (window.InterstitialAdInterface && window.InterstitialAdInterface.isAdLoaded()) {
+    window.InterstitialAdInterface.showAd();
+}
+
+// Callback when closed
+function onInterstitialClosed() {
+    console.log('Ad closed by user');
+}
+```
+
+### 🎯 Smart Page Detection
+
+The plugin automatically detects which pages should display banners:
+
+```bash
+# Show banners only on specific pages
+--variable BANNER_SHOW_ON_PAGES="index.html,game.html,menu.html"
+
+# Hide banners on specific pages
+--variable BANNER_HIDE_ON_PAGES="login.html,settings.html"
+
+# Works with any folder structure
+--variable BANNER_SHOW_ON_PAGES="index.html,game/,levels/easy/"
+```
+
+**📁 See [Folder Examples](FOLDER_EXAMPLES.md) for advanced configurations with complex project structures.**
 
 ---
 
-## 📋 Changelog
+## 📋 Recent Updates
+
+### Version 1.2.2 - Latest
+- ✅ **COMPREHENSIVE DOCUMENTATION**: Complete documentation for page detection and folder structures
+  - `PAGE_DETECTION.md`: Technical documentation explaining how the plugin detects HTML pages
+  - `FOLDER_EXAMPLES.md`: Practical examples with different folder structures and configurations
+  - Real-world scenarios for games, enterprise apps, and e-commerce
+  - Best practices for folder organization and configuration
+  - Debug tips and troubleshooting guides
 
 ### Version 1.2.1
-- ✅ **INICIALIZAÇÃO OTIMIZADA**: Implementação de inicialização do AdMob com atraso configurável
-  - Nova preferência `ADMOB_INIT_DELAY` para controlar o atraso de inicialização
-  - Novo bloco `setup_admob_with_delay.java.block` para inicialização com atraso
-  - Bloco dedicado `admob_init.java.block` para inicialização do AdMob
-- ✅ **CORREÇÕES**:
-  - Corrigidos erros de sintaxe nas injeções em MainActivity.java
-  - Movidas as declarações de variáveis AdMob para dentro da classe MainActivity
-  - Removidas declarações duplicadas de variáveis
-  - Adicionadas as importações necessárias para as classes do AdMob
-  - Corrigida a estrutura da classe adicionando chave de fechamento faltante
-  - Adicionadas anotações @NonNull para melhor compatibilidade com o SDK mais recente
-- ✅ **MELHORIAS**:
-  - Implementados os métodos completos para funcionalidade do AdMob
-  - Melhorado o tratamento de erros e exceções
-  - Otimizada a interface JavaScript para anúncios intersticiais
-  - Atualizada a documentação e exemplos
+- ✅ **OPTIMIZED INITIALIZATION**: Implementation of AdMob initialization with configurable delay
+  - New `ADMOB_INIT_DELAY` preference to control initialization delay
+  - New `setup_admob_with_delay.java.block` for delayed initialization
+  - Dedicated `admob_init.java.block` for AdMob initialization
+- ✅ **BUG FIXES**:
+  - Fixed syntax errors in MainActivity.java injections
+  - Moved AdMob variable declarations inside MainActivity class
+  - Removed duplicate variable declarations
+  - Added necessary imports for AdMob classes
+  - Fixed class structure by adding missing closing brace
+  - Added @NonNull annotations for better SDK compatibility
+- ✅ **IMPROVEMENTS**:
+  - Implemented complete methods for AdMob functionality
+  - Improved error handling and exception management
+  - Optimized JavaScript interface for interstitial ads
+  - Updated documentation and examples
 
 ### Version 1.2.0
-- ✅ Introduzida detecção inteligente de páginas
-- ✅ Adicionadas preferências configuráveis
-- ✅ Implementada arquitetura modular para controle aprimorado da exibição de anúncios
+- ✅ Introduced smart page detection
+- ✅ Added configurable preferences
+- ✅ Implemented modular architecture for enhanced ad display control
+
+**📝 See [Complete Changelog](CHANGELOG.md) for detailed version history.**
 
 ## ⚠️ Mandatory Requirements
 

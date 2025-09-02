@@ -1,7 +1,7 @@
 {
   "name": "admob-native-java-help",
-  "version": "1.2.1",
-  "description": "helper plugin for admob with cordova.",
+  "version": "1.2.2",
+  "description": "Cordova plugin for native AdMob integration with smart page detection, flexible configuration, and comprehensive documentation.",
   "homepage": "https://github.com/ON00dev/admob-native-help#readme",
   "bugs": {
     "url": "https://github.com/ON00dev/admob-native-help/issues"

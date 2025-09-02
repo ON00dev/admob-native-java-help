@@ -40,6 +40,24 @@ function injectIntoMainActivity(filePath, config) {
       /loadUrl\s*\(\s*launchUrl\s*\)\s*;/,
       match => `${match}\n\n// ADMOB_NATIVE_PLUGIN\n${loadBlocks(config)}`
     );
+    
+    // If the first pattern didn't match, try a more flexible pattern
+    if (!code.includes('// ADMOB_NATIVE_PLUGIN')) {
+      code = code.replace(
+        /(loadUrl\([^)]+\);)/,
+        match => `${match}\n\n// ADMOB_NATIVE_PLUGIN\n${loadBlocks(config)}`
+      );
+    }
+    
+    // If still not injected, inject before the last closing brace
+    if (!code.includes('// ADMOB_NATIVE_PLUGIN')) {
+      const lastBraceIndex = code.lastIndexOf('}');
+      if (lastBraceIndex !== -1) {
+        code = code.slice(0, lastBraceIndex) + 
+               `\n\n// ADMOB_NATIVE_PLUGIN\n${loadBlocks(config)}\n` + 
+               code.slice(lastBraceIndex);
+      }
+    }
   }
 
   fs.writeFileSync(filePath, code, 'utf8');
