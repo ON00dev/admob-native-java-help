@@ -1,0 +1,56 @@
+<plugin id="admob-native-java-help" version="1.2.3" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+  <name>admob-native-java-help</name>
+  <description>Cordova plugin for native AdMob integration with smart page detection, flexible configuration, and comprehensive documentation</description>
+
+  <preference name="AD_TYPE" default="banner" />
+  <preference name="AD_POSITION" default="bottom" />
+  ca-app-pub-3940256099942544/2247696110
+  <preference name="BANNER_AD_UNIT_ID" default="ca-app-pub-3940256099942544/6300978111" />
+  <preference name="INTERSTITIAL_AD_UNIT_ID" default="ca-app-pub-3940256099942544/1033173712" />
+  <preference name="APP_ID" default="ca-app-pub-3940256099942544~3347511713" />
+  <preference name="BANNER_SHOW_ON_PAGES" default="index.html" />
+  <preference name="BANNER_HIDE_ON_PAGES" default="" />
+  <preference name="CHECK_URL_INTERVAL" default="1000" />
+  <preference name="SETUP_DELAY" default="2000" />
+  <preference name="JS_INTERFACE_DELAY" default="3000" />
+  <preference name="ADMOB_INIT_DELAY" default="1000" />
+
+  <js-module src="www/admob.js" name="AdMobNativeHelp">
+    <clobbers target="cordova.plugins.AdMobNativeHelp" />
+    <clobbers target="window.AdMobNativeHelp" />
+  </js-module>
+
+  <platform name="android">
+    <!-- AdMob SDK -->
+    <framework src="com.google.android.gms:play-services-ads:22.6.0" />
+
+    <!-- Source Code -->
+    <source-file src="src/android/java/com/admob/nativehelp/AdMobCordovaActivity.java" target-dir="src/com/admob/nativehelp" />
+
+    <!-- Config.xml Preferences Injection -->
+    <config-file target="res/xml/config.xml" parent="/*">
+        <preference name="AdMobAppId" value="$APP_ID" />
+        <preference name="AdMobBannerId" value="$BANNER_AD_UNIT_ID" />
+        <preference name="AdMobInterstitialId" value="$INTERSTITIAL_AD_UNIT_ID" />
+        <preference name="AdMobAdType" value="$AD_TYPE" />
+        <preference name="AdMobAdPosition" value="$AD_POSITION" />
+        <preference name="AdMobBannerShowPages" value="$BANNER_SHOW_ON_PAGES" />
+        <preference name="AdMobBannerHidePages" value="$BANNER_HIDE_ON_PAGES" />
+        <preference name="AdMobCheckUrlInterval" value="$CHECK_URL_INTERVAL" />
+        <preference name="AdMobSetupDelay" value="$SETUP_DELAY" />
+        <preference name="AdMobJsInterfaceDelay" value="$JS_INTERFACE_DELAY" />
+        <preference name="AdMobInitDelay" value="$ADMOB_INIT_DELAY" />
+    </config-file>
+
+    <!-- AndroidManifest.xml Configuration -->
+    <config-file target="AndroidManifest.xml" parent="/manifest/application">
+        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="$APP_ID"/>
+    </config-file>
+
+    <!-- Replace Main Activity with AdMobCordovaActivity 
+    <edit-config file="AndroidManifest.xml" target="/manifest/application/activity[@android:name='MainActivity']" mode="merge">
+        <activity android:name="com.admob.nativehelp.AdMobCordovaActivity" />
+    </edit-config>
+    -->
+  </platform>
+</plugin>

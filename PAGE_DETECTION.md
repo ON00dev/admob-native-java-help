@@ -1,42 +1,31 @@
-# Detecção de Páginas HTML - AdMob Native Java Plugin
+# HTML Page Detection - AdMob Native Java Plugin (v2.0.0)
 
-## Como o Plugin Identifica Páginas
+## How the Plugin Identifies Pages
 
-O plugin utiliza um sistema de **verificação de URL** que monitora continuamente a URL atual da WebView para determinar se deve exibir ou ocultar anúncios.
+The plugin uses a **URL verification** system that continuously monitors the current WebView URL to determine whether to show or hide ads. This is done natively in Java, without affecting the JavaScript performance of your application.
 
-### 🔍 Mecanismo de Detecção
+### 🔍 Detection Mechanism
 
-#### 1. Verificação Contínua
-```java
-// Verifica a URL a cada intervalo configurado (padrão: 1000ms)
-String currentUrl = webView.getUrl();
-if (currentUrl != null && shouldShowBannerOnPage(currentUrl)) {
-    setupAdMobBanner();
-}
-```
+1.  **Monitoring**: A `Handler` checks the WebView URL every `CHECK_URL_INTERVAL` milliseconds (default: 1000ms).
+2.  **Comparison**: The current URL is compared with the strings provided in `BANNER_SHOW_ON_PAGES` and `BANNER_HIDE_ON_PAGES`.
+3.  **Action**: If there is a positive match (show) and no negative match (hide), the banner is displayed. Otherwise, it is hidden.
 
-#### 2. Método de Comparação
-```java
-// Usa contains() para verificar se a URL contém o nome da página
-if (currentUrl.contains(showPage.trim())) {
-    return true; // Exibe banner
-}
-```
+The method uses `String.contains()`, which allows detecting both specific files and entire folders.
 
-## 📁 Suporte a Estruturas de Pastas
+## 📁 Folder Structure Support
 
-### ✅ Funciona Perfeitamente
+### ✅ Works Perfectly
 
-#### Estrutura Simples
+#### Simple Structure
 ```
 www/
 ├── index.html
 ├── game.html
 └── menu.html
 ```
-**Configuração**: `index.html,game.html,menu.html`
+**CLI Configuration**: `--variable BANNER_SHOW_ON_PAGES="index.html,game.html,menu.html"`
 
-#### Estrutura com Subpastas
+#### Structure with Subfolders
 ```
 www/
 ├── index.html
@@ -48,168 +37,51 @@ www/
     └── level2.html
 ```
 
-**Configurações Possíveis**:
+**Possible Configurations**:
 
-1. **Por nome de arquivo**:
-   ```
-   BANNER_SHOW_ON_PAGES: "index.html,game.html,level1.html"
-   ```
-   - ✅ Detecta: `file:///android_asset/www/index.html`
-   - ✅ Detecta: `file:///android_asset/www/pages/game.html`
-   - ✅ Detecta: `file:///android_asset/www/levels/level1.html`
+1. **By filename**:
+   `--variable BANNER_SHOW_ON_PAGES="index.html,game.html,level1.html"`
+   - ✅ Detects: `file:///android_asset/www/index.html`
+   - ✅ Detects: `file:///android_asset/www/pages/game.html`
+   - ✅ Detects: `file:///android_asset/www/levels/level1.html`
 
-2. **Por caminho parcial**:
-   ```
-   BANNER_SHOW_ON_PAGES: "pages/,levels/level1"
-   ```
-   - ✅ Detecta: `file:///android_asset/www/pages/game.html`
-   - ✅ Detecta: `file:///android_asset/www/pages/settings.html`
-   - ✅ Detecta: `file:///android_asset/www/levels/level1.html`
-   - ❌ Não detecta: `file:///android_asset/www/levels/level2.html`
+2. **By partial path**:
+   `--variable BANNER_SHOW_ON_PAGES="pages/,levels/level1"`
+   - ✅ Detects: `file:///android_asset/www/pages/game.html`
+   - ✅ Detects: `file:///android_asset/www/pages/settings.html`
+   - ✅ Detects: `file:///android_asset/www/levels/level1.html`
+   - ❌ Does not detect: `file:///android_asset/www/levels/level2.html`
 
-3. **Por pasta completa**:
-   ```
-   BANNER_SHOW_ON_PAGES: "pages/,levels/"
-   ```
-   - ✅ Detecta todas as páginas dentro de `pages/`
-   - ✅ Detecta todas as páginas dentro de `levels/`
+3. **By complete folder**:
+   `--variable BANNER_SHOW_ON_PAGES="pages/,levels/"`
+   - ✅ Detects all pages inside `pages/`
+   - ✅ Detects all pages inside `levels/`
 
-### 🎯 Exemplos Práticos
+### 🎯 Rule Priority
 
-#### Estrutura Complexa
-```
-www/
-├── index.html
-├── auth/
-│   ├── login.html
-│   └── register.html
-├── game/
-│   ├── main.html
-│   ├── levels/
-│   │   ├── easy.html
-│   │   └── hard.html
-│   └── shop/
-│       └── items.html
-└── settings/
-    └── preferences.html
-```
+The **HIDE** rule (`BANNER_HIDE_ON_PAGES`) always has priority over the **SHOW** rule (`BANNER_SHOW_ON_PAGES`).
 
-#### Configurações Inteligentes
+Example:
+- Show: `levels/`
+- Hide: `levels/bonus.html`
 
-**1. Exibir apenas no jogo**:
-```
-BANNER_SHOW_ON_PAGES: "game/"
-```
-- ✅ Exibe em: `game/main.html`, `game/levels/easy.html`, `game/shop/items.html`
-- ❌ Não exibe em: `index.html`, `auth/login.html`, `settings/preferences.html`
+Result: The banner will appear in all levels, **except** in the bonus level.
 
-**2. Exibir em páginas específicas**:
-```
-BANNER_SHOW_ON_PAGES: "index.html,game/main.html,game/levels/"
-```
-- ✅ Exibe em: `index.html`, `game/main.html`, `game/levels/easy.html`, `game/levels/hard.html`
-- ❌ Não exibe em: `auth/login.html`, `game/shop/items.html`
+## ⚙️ CLI Configuration
 
-**3. Excluir páginas específicas**:
-```
-BANNER_SHOW_ON_PAGES: "game/"
-# Mas se quiséssemos excluir a loja (versão antiga do plugin):
-# BANNER_HIDE_ON_PAGES: "shop/"
-```
+In version 2.0.0, you define these rules when installing the plugin:
 
-## 🧠 Inteligência do Plugin
-
-### ✅ Capacidades
-
-1. **Detecção em Tempo Real**: Monitora mudanças de URL continuamente
-2. **Suporte a Subpastas**: Funciona com qualquer estrutura de pastas
-3. **Correspondência Flexível**: Usa `contains()` para máxima flexibilidade
-4. **Configuração Granular**: Permite especificar arquivos ou pastas inteiras
-5. **Logs Detalhados**: Registra todas as verificações para debug
-
-### ⚠️ Limitações
-
-1. **Correspondência por Substring**: 
-   - `game.html` também detecta `minigame.html`
-   - Solução: Use caminhos mais específicos como `pages/game.html`
-
-2. **Não Suporta Regex**: 
-   - Não é possível usar padrões como `level*.html`
-   - Solução: Liste cada página ou use o caminho da pasta
-
-3. **Case Sensitive**: 
-   - `Game.html` ≠ `game.html`
-   - Solução: Mantenha consistência nos nomes
-
-4. **URLs Dinâmicas**: 
-   - Não funciona com SPAs que usam hash routing (`#/page`)
-   - Solução: Use URLs reais ou configure manualmente
-
-## 📋 Melhores Práticas
-
-### 1. Estrutura Organizada
-```
-www/
-├── index.html          # Página inicial
-├── game/               # Pasta do jogo (com anúncios)
-│   ├── *.html
-├── menu/               # Menus (com anúncios)
-│   ├── *.html
-└── auth/               # Autenticação (sem anúncios)
-    ├── *.html
-```
-
-**Configuração**:
-```
-BANNER_SHOW_ON_PAGES: "index.html,game/,menu/"
-```
-
-### 2. Nomenclatura Consistente
-- Use sempre minúsculas
-- Evite caracteres especiais
-- Seja específico quando necessário
-
-### 3. Teste e Debug
 ```bash
-# Visualizar logs de detecção
-adb logcat | grep "MainActivity.*URL"
+cordova plugin add admob-native-java-help \
+  --variable BANNER_SHOW_ON_PAGES="index.html,home.html" \
+  --variable BANNER_HIDE_ON_PAGES="login.html" \
+  --variable CHECK_URL_INTERVAL="1000"
 ```
 
-### 4. Configuração Progressiva
-```
-# Comece simples
-BANNER_SHOW_ON_PAGES: "index.html"
+| Variable | Description |
+|----------|-------------|
+| `BANNER_SHOW_ON_PAGES` | Pages where the banner MUST appear. |
+| `BANNER_HIDE_ON_PAGES` | Pages where the banner MUST NOT appear. |
+| `CHECK_URL_INTERVAL` | Verification frequency in milliseconds. |
 
-# Expanda gradualmente
-BANNER_SHOW_ON_PAGES: "index.html,game.html"
-
-# Use pastas para grupos
-BANNER_SHOW_ON_PAGES: "index.html,game/"
-```
-
-## 🔧 Exemplos de URLs Detectadas
-
-```
-# URL completa no Android:
-file:///android_asset/www/index.html
-file:///android_asset/www/pages/game.html
-file:///android_asset/www/levels/easy/stage1.html
-
-# O plugin verifica se a URL contém:
-"index.html"     ✅ Detecta a primeira
-"pages/"         ✅ Detecta a segunda
-"levels/easy/"   ✅ Detecta a terceira
-"game.html"      ✅ Detecta a segunda
-"stage1"         ✅ Detecta a terceira
-```
-
-## 💡 Conclusão
-
-O plugin é **bastante inteligente** para detectar páginas em diferentes estruturas de pastas, usando um sistema flexível baseado em substring matching. Ele funciona bem com:
-
-- ✅ Estruturas simples e complexas
-- ✅ Subpastas aninhadas
-- ✅ Configuração por arquivo ou pasta
-- ✅ Monitoramento em tempo real
-
-A chave é entender que ele usa `contains()` na URL completa, permitindo configurações muito flexíveis para qualquer estrutura de projeto.
+If no page is specified in `BANNER_SHOW_ON_PAGES`, the default behavior depends on the internal implementation (usually does not show anything or shows everywhere, it is recommended to always configure). The plugin default is `index.html`.

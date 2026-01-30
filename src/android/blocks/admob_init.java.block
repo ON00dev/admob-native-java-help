@@ -1,7 +1,0 @@
-android.util.Log.d("MainActivity", "onCreate chamado, launchUrl: " + launchUrl);
-
-// Adiciona interface JavaScript para anúncios intersticiais
-setupJavaScriptInterface();
-
-// Inicializa o AdMob com delay
-setupAdMobWithDelay();

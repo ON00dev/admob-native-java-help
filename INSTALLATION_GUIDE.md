@@ -1,141 +1,109 @@
-# Guia de Instalação - AdMob Native Java Plugin
+# Installation Guide - AdMob Native Java Plugin (v2.0.0)
 
-## Pré-requisitos
+## Prerequisites
 
-- Projeto Cordova configurado
-- Android SDK instalado
-- Conta AdMob ativa com IDs de unidades de anúncio
+- Cordova project configured
+- Android SDK installed
+- AdMob account active with ad unit IDs
 
-## Processo de Instalação
+## Installation Process
 
-### 1. Instalação do Plugin
+Version 2.0.0 drastically simplified the installation process. All configurations are passed via CLI variables, and there is no longer any need to manually edit files.
+
+### 1. Plugin Installation
+
+Run the command below in your Cordova project directory, replacing the values with your actual IDs:
 
 ```bash
-# Navegue até o diretório do seu projeto Cordova
-cd seu-projeto-cordova
-
-# Instale o plugin
-cordova plugin add caminho/para/admob-native-java-help
+cordova plugin add admob-native-java-help \
+  --variable APP_ID="ca-app-pub-YOUR_APP_ID" \
+  --variable BANNER_AD_UNIT_ID="ca-app-pub-YOUR_BANNER_ID" \
+  --variable INTERSTITIAL_AD_UNIT_ID="ca-app-pub-YOUR_INTERSTITIAL_ID" \
+  --variable AD_TYPE="banner,interstitial" \
+  --variable AD_POSITION="bottom" \
+  --variable BANNER_SHOW_ON_PAGES="index.html,game.html"
 ```
 
-### 2. Configuração Inicial
+### 2. Available Configuration Variables
 
-Antes da instalação, o plugin solicitará as seguintes informações:
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `APP_ID` | **Required**. Your AdMob Application ID. | - |
+| `BANNER_AD_UNIT_ID` | Banner Ad Unit ID. | `""` |
+| `INTERSTITIAL_AD_UNIT_ID` | Interstitial Ad Unit ID. | `""` |
+| `AD_TYPE` | Active ad types: `banner`, `interstitial` or `banner,interstitial`. | `banner` |
+| `AD_POSITION` | Banner position: `top` or `bottom`. | `bottom` |
+| `BANNER_SHOW_ON_PAGES` | List of pages (comma separated) where the banner should appear. | `index.html` |
+| `BANNER_HIDE_ON_PAGES` | List of pages where the banner should be hidden (high priority). | `""` |
+| `CHECK_URL_INTERVAL` | Interval (ms) to check for page changes. | `1000` |
+| `SETUP_DELAY` | Delay (ms) before starting AdMob setup. | `2000` |
+| `JS_INTERFACE_DELAY` | Delay (ms) before injecting the JS interface. | `3000` |
+| `ADMOB_INIT_DELAY` | Delay (ms) before initializing the AdMob SDK. | `1000` |
 
-- **Tipo de anúncio**: `banner`, `interstitial` ou `banner,interstitial`
-- **Posição do banner**: `top` ou `bottom`
-- **ID da unidade de anúncio banner**: Seu ID do AdMob para banner
-- **ID da unidade de anúncio intersticial**: Seu ID do AdMob para intersticial
-- **ID da aplicação AdMob**: Seu Application ID do AdMob
-- **Páginas para exibir banner**: Lista de páginas (ex: `index.html,game.html`)
+### 3. What happens during installation?
 
-### 3. Exemplo de Configuração
+Unlike previous versions, this plugin **DOES NOT modify** your `MainActivity.java`.
 
-```
-Tipo de anúncio: banner,interstitial
-Posição do banner: bottom
-ID Banner: ca-app-pub-1234567890123456/1234567890
-ID Intersticial: ca-app-pub-1234567890123456/0987654321
-ID da Aplicação: ca-app-pub-1234567890123456~1234567890
-Páginas do banner: index.html,menu.html
-```
+1.  The plugin creates an `AdMobLauncher.java` file in your application's package.
+2.  This file extends the plugin's class (`AdMobCordovaActivity`) which contains all the necessary logic.
+3.  `AndroidManifest.xml` is automatically updated to use `AdMobLauncher` as the app's main activity.
 
-### 4. Uso no JavaScript
+This ensures a clean, safe installation that is easy to remove if necessary.
 
-#### Para Anúncios Intersticiais
+### 4. JavaScript Usage
+
+#### For Interstitial Ads
+
+The plugin automatically injects a global object `window.InterstitialAdInterface` (or `window.AdMobNativeHelp` depending on the version, but the native interface uses `InterstitialAdInterface`).
 
 ```javascript
-// Verificar se o anúncio está carregado
-if (window.AndroidInterstitial && window.AndroidInterstitial.isAdLoaded()) {
-    // Exibir o anúncio
-    window.AndroidInterstitial.showAd();
+// Check if interface exists and ad is loaded
+if (window.InterstitialAdInterface && window.InterstitialAdInterface.isAdLoaded()) {
+    window.InterstitialAdInterface.showAd();
 } else {
-    console.log('Anúncio intersticial não está carregado');
+    console.log('Ad not loaded yet or interface unavailable');
 }
 
-// Callback para quando o anúncio for fechado (opcional)
-function onInterstitialClosed() {
-    console.log('Anúncio intersticial foi fechado');
-    // Sua lógica aqui
-}
+// Listen for close event (optional)
+window.onInterstitialClosed = function() {
+    console.log('Ad closed by user');
+    // Resume game or app
+};
 ```
 
-#### Para Banners
+#### For Banners
 
-Os banners são exibidos automaticamente nas páginas configuradas. Não é necessário código JavaScript adicional.
+Banners are fully automatic. They appear or disappear based on the current WebView URL and the `BANNER_SHOW_ON_PAGES` and `BANNER_HIDE_ON_PAGES` settings.
 
-### 5. Build e Teste
+### 5. Build and Test
 
 ```bash
-# Build para Android
+# Build for Android
 cordova build android
 
-# Executar no dispositivo/emulador
+# Run on device
 cordova run android
 ```
 
-### 6. Verificação da Instalação
+### 6. Installation Verification
 
-Após a instalação, verifique se:
+After installing, you can verify if everything went well by checking if the `AdMobLauncher.java` file was created in:
+`platforms/android/app/src/main/java/your/app/package/AdMobLauncher.java`
 
-1. **AndroidManifest.xml** contém o Application ID:
-   ```xml
-   <meta-data
-       android:name="com.google.android.gms.ads.APPLICATION_ID"
-       android:value="seu-app-id" />
-   ```
+And if `AndroidManifest.xml` points to it:
+```xml
+<activity android:name=".AdMobLauncher" ...>
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+</activity>
+```
 
-2. **MainActivity.java** foi modificado com:
-   - Importações do AdMob
-   - Variáveis de configuração
-   - Métodos para banner e/ou intersticial
-   - Interface JavaScript (se intersticial estiver habilitado)
+### 7. AdMob Test IDs
 
-### 7. IDs de Teste do AdMob
+For development, use these official Google IDs:
 
-Para desenvolvimento, use os IDs de teste do Google:
-
-- **Application ID**: `ca-app-pub-3940256099942544~3347511713`
+- **App ID**: `ca-app-pub-3940256099942544~3347511713`
 - **Banner**: `ca-app-pub-3940256099942544/6300978111`
-- **Intersticial**: `ca-app-pub-3940256099942544/1033173712`
-
-### 8. Solução de Problemas
-
-#### Banner não aparece:
-- Verifique se a página atual está na lista de páginas configuradas
-- Confirme se o Application ID está correto no AndroidManifest.xml
-- Verifique os logs do Android para erros do AdMob
-
-#### Intersticial não funciona:
-- Confirme que `interstitial` está incluído no tipo de anúncio
-- Verifique se `window.AndroidInterstitial` está disponível
-- Use `isAdLoaded()` antes de chamar `showAd()`
-
-#### Logs úteis:
-```bash
-# Visualizar logs do Android
-adb logcat | grep MainActivity
-```
-
-### 9. Migração para Produção
-
-1. Substitua os IDs de teste pelos IDs reais da sua conta AdMob
-2. Remova ou desinstale o plugin
-3. Reinstale com os IDs de produção
-4. Faça um build de release
-
-### 10. Desinstalação
-
-```bash
-cordova plugin remove admob-native-java-help
-```
-
-**Nota**: A desinstalação remove automaticamente todas as modificações feitas pelo plugin.
-
-## Suporte
-
-Em caso de problemas, verifique:
-1. Versão do Cordova compatível
-2. Configuração correta dos IDs do AdMob
-3. Permissões de internet no AndroidManifest.xml
-4. Logs de erro no console do Android
+- **Interstitial**: `ca-app-pub-3940256099942544/1033173712`

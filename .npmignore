@@ -1,0 +1,7 @@
+test-app/
+plugin.xml.bak
+test_install.js
+.git
+.gitignore
+.DS_Store
+node_modules/
