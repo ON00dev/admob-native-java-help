@@ -97,13 +97,13 @@ public class AdMobCordovaActivity extends CordovaActivity {
                 Log.d(TAG, "AdMob inicializado com sucesso");
                 
                 // Configura a interface JavaScript para anúncios intersticiais
-                if (AD_TYPE.contains("interstitial")) {
+                if (!INTERSTITIAL_AD_UNIT_ID.isEmpty()) {
                     // Carrega o anúncio intersticial
                     loadInterstitialAd();
                 }
                 
                 // Verifica periodicamente a URL para páginas configuradas
-                if (AD_TYPE.contains("banner")) {
+                if (!BANNER_AD_UNIT_ID.isEmpty()) {
                     checkForConfiguredPages();
                 }
             });

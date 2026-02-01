@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.6] - 2026-02-01
+
+### Fixed
+- **Interstitial Loading**: Fixed an issue where Interstitial Ads were not loading if the `AD_TYPE` preference was not explicitly set to include "interstitial". Now, the plugin automatically attempts to load interstitials whenever `INTERSTITIAL_AD_UNIT_ID` is provided, regardless of the `AD_TYPE` value.
+- **Banner Logic**: Similarly, banner logic is now activated based on the presence of `BANNER_AD_UNIT_ID` rather than relying solely on `AD_TYPE`.
+
 ## [2.0.5] - 2026-02-01
 
 ### Fixed
