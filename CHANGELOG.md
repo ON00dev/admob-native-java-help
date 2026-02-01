@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.2] - 2026-01-31
+
+### Changed
+- **Dependency Management**: Replaced direct Google Play Services SDK reference with `admob-plus-cordova` dependency.
+- **Simplification**: Removed `APP_ID` preference from plugin configuration (handled by dependency).
+- **Documentation**: Updated installation guides to reflect new dependency requirements.
+
+## [2.0.1] - 2026-01-31
+
+### Fixed
+- **Critical WebView Fix**: Added `loadUrl(launchUrl)` to `AdMobCordovaActivity` to ensure the app loads correctly on startup.
+- **Build Compliance**: Added `DummyActivity.java` to satisfy Cordova build checks that require a `CordovaActivity` subclass in the main package.
+- **Manifest Logic**: Improved `fix-manifest.js` to correctly handle Activity aliases and launcher registration.
+
 ## [2.0.0] - 2026-01-29
 
 ### Major Architecture Change
@@ -98,19 +112,3 @@ All notable changes to this project will be documented in this file.
 - **INTERSTITIAL IMPLEMENTATION**: Complete rewrite of interstitial.java.block based on working example
 - **JAVASCRIPT INTERFACE**: Fixed js_interface.java.block with proper callback handling
 - **ADMOB INITIALIZATION**: Added admob_init.java.block for proper AdMob SDK initialization
-- **IMPORTS**: Added missing imports for interstitial ad functionality in utils.js
-- **LIFECYCLE MANAGEMENT**: Implemented complete interstitial ad lifecycle (load, show, callbacks)
-
-### Added
-- **NEW BLOCK**: Created admob_init.java.block for AdMob initialization and JavaScript interface setup
-- **ENHANCED UTILS**: Updated utils.js to include admob_init.java.block for interstitial ads
-- **COMPLETE INTEGRATION**: Full integration between Java and JavaScript for interstitial ads
-- **ERROR HANDLING**: Proper error handling and logging for interstitial ad operations
-
-### Technical Details
-- Rewrote interstitial.java.block with complete AdMob SDK implementation
-- Fixed JavaScript interface implementation with proper callback handling
-- Added admob_init.java.block for proper AdMob initialization
-- Enhanced loadBlocks function to include AdMob initialization for interstitial ads
-- Added missing imports: MobileAds, InterstitialAd, InterstitialAdLoadCallback, FullScreenContentCallback, LoadAdError
-- Implemented complete interstitial ad lifecycle management with proper callbacks

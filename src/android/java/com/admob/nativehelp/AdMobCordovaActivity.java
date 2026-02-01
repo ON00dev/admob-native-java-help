@@ -31,7 +31,7 @@ public class AdMobCordovaActivity extends CordovaActivity {
     private InterstitialAd mInterstitialAd = null;
     
     // Configurações (carregadas das preferências)
-    private String APP_ID;
+    // private String APP_ID; // Unused, handled by admob-plus-cordova
     private String BANNER_AD_UNIT_ID;
     private String INTERSTITIAL_AD_UNIT_ID;
     private String AD_TYPE;
@@ -58,6 +58,7 @@ public class AdMobCordovaActivity extends CordovaActivity {
         if (launchUrl == null) {
             launchUrl = "file:///android_asset/www/index.html";
         }
+        this.loadUrl(launchUrl); // Força o carregamento da URL inicial
         
         Log.d(TAG, "onCreate chamado, launchUrl: " + launchUrl);
 
@@ -70,7 +71,7 @@ public class AdMobCordovaActivity extends CordovaActivity {
 
     private void loadPreferences() {
         // Valores padrão caso não estejam definidos
-        APP_ID = preferences.getString("AdMobAppId", "");
+        // APP_ID = preferences.getString("AdMobAppId", ""); // Unused
         BANNER_AD_UNIT_ID = preferences.getString("AdMobBannerId", "");
         INTERSTITIAL_AD_UNIT_ID = preferences.getString("AdMobInterstitialId", "");
         AD_TYPE = preferences.getString("AdMobAdType", "banner");
