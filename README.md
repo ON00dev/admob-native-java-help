@@ -1,6 +1,6 @@
 # admob-native-java-help
 
-Cordova plugin for native AdMob integration using a Clean Architecture approach (v2.0.0).
+Cordova plugin for native AdMob integration using a Clean Architecture approach (v2).
 This plugin creates a dedicated `AdMobCordovaActivity` that extends `CordovaActivity` to manage AdMob banners and interstitials natively, outside the WebView, ensuring reliable display and no z-index issues.
 
 ## Prerequisites

@@ -1,4 +1,4 @@
-# HTML Page Detection - AdMob Native Java Plugin (v2.0.0)
+# HTML Page Detection - AdMob Native Java Plugin (v2)
 
 ## How the Plugin Identifies Pages
 
@@ -69,7 +69,7 @@ Result: The banner will appear in all levels, **except** in the bonus level.
 
 ## ⚙️ CLI Configuration
 
-In version 2.0.0, you define these rules when installing the plugin:
+In version v2, you define these rules when installing the plugin:
 
 ```bash
 cordova plugin add admob-native-java-help \

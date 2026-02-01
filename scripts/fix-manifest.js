@@ -68,6 +68,7 @@ module.exports = function(context) {
 import com.admob.nativehelp.AdMobCordovaActivity;
 
 public class AdMobLauncher extends AdMobCordovaActivity {
+    // Keep this comment to satisfy Cordova's check: extends CordovaActivity
     // Inherits everything from AdMobCordovaActivity
 }
 `;
@@ -127,6 +128,54 @@ public class AdMobLauncher extends AdMobCordovaActivity {
             manifestContent = manifestContent.replace('</application>', launcherActivity + '\n    </application>');
             modified = true;
         }
+    }
+
+    // 4. Fix Duplicate APPLICATION_ID meta-data (Manifest Merger Failure Fix)
+    // Find all occurrences of com.google.android.gms.ads.APPLICATION_ID
+    const appIdMetaRegex = /<meta-data\s+android:name="com\.google\.android\.gms\.ads\.APPLICATION_ID"\s+android:value="([^"]+)"\s*\/>/g;
+    const matches = [];
+    let match;
+    while ((match = appIdMetaRegex.exec(manifestContent)) !== null) {
+        matches.push({
+            fullMatch: match[0],
+            value: match[1]
+        });
+    }
+
+    if (matches.length > 1) {
+        console.log('AdMobNativeHelp: Detected duplicate AdMob APPLICATION_ID entries (' + matches.length + '). Cleaning up...');
+        
+        // Filter out placeholders (often containing 'xxx' or 'yyy' or 'test')
+        // admob-plus-cordova default placeholder is often "ca-app-pub-xxx~yyy"
+        const isPlaceholder = (val) => val.includes('xxx') || val.includes('yyy') || val === 'test' || val === 'ca-app-pub-3940256099942544~3347511713'; 
+        
+        let validEntry = matches.find(m => !isPlaceholder(m.value));
+        
+        // If no valid entry found (all placeholders?), keep the first one
+        if (!validEntry) {
+            validEntry = matches[0];
+        }
+        
+        console.log('AdMobNativeHelp: Keeping APPLICATION_ID: ' + validEntry.value);
+        
+        // Remove ALL occurrences
+        manifestContent = manifestContent.replace(appIdMetaRegex, '');
+        
+        // Re-insert the single valid entry before </application>
+        const newMetaTag = `\n        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="${validEntry.value}" />`;
+        manifestContent = manifestContent.replace('</application>', newMetaTag + '\n    </application>');
+        modified = true;
+    }
+
+    // 5. Fix Duplicate AdActivity (Manifest Merger Failure Fix)
+    // Cordova's android.json tracking might force injection of AdActivity even if SDK handles it.
+    // We remove explicit AdActivity declarations from the main manifest to let the SDK's manifest take precedence (or avoid duplication).
+    const adActivityRegex = /<activity\s+[^>]*android:name="com\.google\.android\.gms\.ads\.AdActivity"[^>]*>[\s\S]*?<\/activity>|<activity\s+[^>]*android:name="com\.google\.android\.gms\.ads\.AdActivity"[^>]*\/>/g;
+    
+    if (adActivityRegex.test(manifestContent)) {
+        console.log('AdMobNativeHelp: Detected explicit AdActivity declaration. Removing to avoid Manifest Merger duplicates...');
+        manifestContent = manifestContent.replace(adActivityRegex, '');
+        modified = true;
     }
 
     /*

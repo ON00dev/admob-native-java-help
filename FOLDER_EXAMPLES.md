@@ -1,8 +1,8 @@
-# 📁 Practical Examples - Folder Structures (v2.0.0)
+# 📁 Practical Examples - Folder Structures (v2)
 
 ## 🎯 How the Plugin Detects Pages
 
-The AdMob Native Java plugin (v2.0.0) uses an intelligent system to detect when to show or hide banners, based on the WebView URL.
+The AdMob Native Java plugin (v2) uses an intelligent system to detect when to show or hide banners, based on the WebView URL.
 
 Configuration is done entirely via **CLI variables** during installation. It is not necessary to manually edit Java or XML files.
 
@@ -106,7 +106,7 @@ cordova plugin add admob-native-java-help \
 
 ## 💡 Configuration Tips (CLI)
 
-In version 2.0.0, all these settings are passed at installation time:
+In version v2, all these settings are passed at installation time:
 
 ```bash
 cordova plugin add admob-native-java-help \

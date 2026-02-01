@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.5] - 2026-02-01
+
+### Fixed
+- **AdActivity Duplication**: Implemented automatic removal of explicit `com.google.android.gms.ads.AdActivity` declarations in `AndroidManifest.xml`. This resolves "Duplicate Activity" build errors caused by residual Cordova tracking (android.json) conflicting with the Google Ads SDK's internal manifest declaration.
+
+## [2.0.4] - 2026-01-31
+
+### Fixed
+- **Manifest Merger Failure**: Implemented automatic detection and removal of duplicate `com.google.android.gms.ads.APPLICATION_ID` meta-data in `AndroidManifest.xml`. This resolves build errors caused by conflicts between the default placeholder value from dependencies and the user-provided App ID. The plugin now intelligently preserves the valid App ID.
+
 ## [2.0.3] - 2026-01-31
 
 ### Changed
@@ -74,36 +84,6 @@ All notable changes to this project will be documented in this file.
 
 ### Improved
 - Implemented full methods for AdMob functionality
-- Improved error and exception handling
-- Optimized JavaScript interface for interstitial ads
-- Updated documentation and examples
-
-## [1.2.0] - 2025-07-30
-
-### Added
-- **CUSTOM PREFERENCES**: Added configurable preferences for advanced banner control
-  - `BANNER_SHOW_ON_PAGES`: Control which pages display banners
-  - `BANNER_HIDE_ON_PAGES`: Control which pages hide banners
-  - `CHECK_URL_INTERVAL`: Configurable URL checking interval
-  - `SETUP_DELAY`: Configurable setup delay
-  - `JS_INTERFACE_DELAY`: Configurable JavaScript interface delay
-- **MODULAR ARCHITECTURE**: Complete restructure with separate Java blocks
-  - `variables.java.block`: Centralized variable management
-  - `check_pages.java.block`: URL monitoring and page detection
-  - `setup_banner.java.block`: Banner configuration and positioning
-  - `setup_js_interface.java.block`: JavaScript interface setup
-  - `interstitial_methods.java.block`: Interstitial ad management
-- **EXAMPLE FILES**: Comprehensive examples for developers
-  - `example/index.html`: Complete HTML interface demo
-  - `example/admob-example.js`: JavaScript library with AdMobManager class
-  - `example/README.md`: Detailed documentation and usage guide
-
-### Enhanced
-- **SMART PAGE DETECTION**: Automatic URL monitoring with configurable intervals
-- **FLEXIBLE BANNER CONTROL**: Show/hide banners based on current page
-- **IMPROVED JAVASCRIPT INTERFACE**: Enhanced callback system and error handling
-- **BETTER CONFIGURATION**: All timing and behavior aspects are now configurable
-- **DEVELOPER EXPERIENCE**: Complete examples and documentation
 
 ### Technical Improvements
 - Modular Java block architecture for better maintainability
