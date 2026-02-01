@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.3] - 2026-01-31
+
+### Changed
+- **UI Architecture**: Switched from `LinearLayout` to `FrameLayout` for the main Activity layout.
+- **Overlay Support**: WebView is now configured with a transparent background (`0x00000000`), allowing banners to be displayed in overlay mode (floating above or below content) without resizing or cutting the WebView viewport.
+- **Dependency Config**: Explicitly exposed `APP_ID_ANDROID` preference to be passed down to the `admob-plus-cordova` dependency for automatic `AndroidManifest.xml` configuration.
+
 ## [2.0.2] - 2026-01-31
 
 ### Changed

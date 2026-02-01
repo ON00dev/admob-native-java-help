@@ -1,7 +1,8 @@
 package com.admob.nativehelp;
 
 import android.os.Bundle;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+import android.view.Gravity;
 import android.view.ViewGroup.LayoutParams;
 import org.apache.cordova.CordovaActivity;
 import org.apache.cordova.CordovaPreferences;
@@ -188,9 +189,8 @@ public class AdMobCordovaActivity extends CordovaActivity {
         runOnUiThread(() -> {
             // Obtém a WebView do Cordova
             if (appView != null && appView.getView() != null) {
-                // Cria um novo layout para conter a WebView e o banner
-                LinearLayout layout = new LinearLayout(this);
-                layout.setOrientation(LinearLayout.VERTICAL);
+                // Cria um novo layout (FrameLayout) para conter a WebView e o banner em overlay
+                FrameLayout layout = new FrameLayout(this);
                 layout.setBackgroundColor(0xff000000); // Fundo preto padrão
                 
                 // Remove a WebView do parent atual antes de adicionar ao novo layout
@@ -199,7 +199,7 @@ public class AdMobCordovaActivity extends CordovaActivity {
                     parent.removeView(appView.getView());
                 }
                 
-                // Configura a WebView para manter o CSS original e eventos de toque
+                // Configura a WebView com fundo transparente para overlay funcionar
                 appView.getView().setBackgroundColor(0x00000000);
                 appView.getView().setClickable(true);
                 appView.getView().setFocusable(true);
@@ -213,27 +213,29 @@ public class AdMobCordovaActivity extends CordovaActivity {
                     webView.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
                 }
                 
-                // Parâmetros para a WebView ocupar o espaço disponível
-                LinearLayout.LayoutParams webViewParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    0
+                // Parâmetros para a WebView ocupar toda a tela (MATCH_PARENT)
+                FrameLayout.LayoutParams webViewParams = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT
                 );
-                webViewParams.weight = 1; // Ocupa todo o espaço disponível
                 
                 // Parâmetros para o banner
-                LinearLayout.LayoutParams adParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
+                FrameLayout.LayoutParams adParams = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT
                 );
                 
-                // Adiciona componentes baseado na posição configurada
+                // Define a gravidade (posição) do banner
                 if ("top".equalsIgnoreCase(AD_POSITION)) {
-                    layout.addView(adView, adParams);
-                    layout.addView(appView.getView(), webViewParams);
+                    adParams.gravity = Gravity.TOP;
                 } else {
-                    layout.addView(appView.getView(), webViewParams);
-                    layout.addView(adView, adParams);
+                    adParams.gravity = Gravity.BOTTOM;
                 }
+                
+                // Adiciona primeiro a WebView (fundo) e depois o Banner (frente)
+                // Isso garante que o banner flutue sobre o conteúdo sem cortar a WebView
+                layout.addView(appView.getView(), webViewParams);
+                layout.addView(adView, adParams);
 
                 // Define esse layout como conteúdo da atividade
                 setContentView(layout);
