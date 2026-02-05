@@ -84,18 +84,14 @@ public class AdMobLauncher extends AdMobCordovaActivity {
     // 3. Update AndroidManifest.xml to use AdMobLauncher instead of MainActivity
     let modified = false;
 
-    // Remove LAUNCHER intent from MainActivity (but keep the Activity)
-    // We want MainActivity to exist (to satisfy build/plugins) but NOT be the launcher.
-    const mainActivityLauncherRegex = /(<activity[^>]*android:name="MainActivity"[^>]*>[\s\S]*?)<category\s+android:name="android\.intent\.category\.LAUNCHER"\s*\/>([\s\S]*?<\/activity>)/;
-    
-    if (mainActivityLauncherRegex.test(manifestContent)) {
-        console.log('AdMobNativeHelp: Removing LAUNCHER category from MainActivity (preserving Activity).');
-        manifestContent = manifestContent.replace(mainActivityLauncherRegex, '$1$2');
+    // Remove old MainActivity block
+    // We match standard Cordova MainActivity definition
+    const mainActivityRegex = /<activity[^>]*android:name="MainActivity"[^>]*>[\s\S]*?<\/activity>/;
+    if (mainActivityRegex.test(manifestContent)) {
+        console.log('AdMobNativeHelp: Removing MainActivity block.');
+        manifestContent = manifestContent.replace(mainActivityRegex, '');
         modified = true;
     }
-
-    // Fallback: If MainActivity was previously removed or we need to ensure it's not the launcher in other ways
-    // For now, we assume standard Cordova manifest structure.
 
     // Remove any leftover AdMobCordovaActivity or alias blocks from previous attempts
     const oldAdMobRegex = /<activity[^>]*android:name="[^"]*AdMobCordovaActivity"[^>]*>[\s\S]*?<\/activity>/;
@@ -180,40 +176,6 @@ public class AdMobLauncher extends AdMobCordovaActivity {
         console.log('AdMobNativeHelp: Detected explicit AdActivity declaration. Removing to avoid Manifest Merger duplicates...');
         manifestContent = manifestContent.replace(adActivityRegex, '');
         modified = true;
-    }
-
-    // 6. Fix Deprecated MobileAds.getVersionString() in AdMob.java (from admob-plus-cordova)
-    // The user reported "Corrigi o código do plugin ( AdMob.java ): Atualizei a chamada obsoleta para MobileAds.getVersion().toString()"
-    // We search for AdMob.java in the platform source and patch it.
-    
-    const patchAdMobJava = (dir) => {
-        if (!fs.existsSync(dir)) return;
-        const files = fs.readdirSync(dir);
-        for (const file of files) {
-            const fullPath = path.join(dir, file);
-            const stat = fs.statSync(fullPath);
-            if (stat.isDirectory()) {
-                patchAdMobJava(fullPath);
-            } else if (file === 'AdMob.java') {
-                let content = fs.readFileSync(fullPath, 'utf8');
-                if (content.includes('MobileAds.getVersionString()')) {
-                    console.log('AdMobNativeHelp: Patching deprecated MobileAds.getVersionString() in ' + fullPath);
-                    content = content.replace(/MobileAds\.getVersionString\(\)/g, 'MobileAds.getVersion().toString()');
-                    fs.writeFileSync(fullPath, content, 'utf8');
-                }
-            }
-        }
-    };
-
-    // Start search from app/src/main/java
-    // Note: platformRoot is platforms/android
-    const javaSrcRoot = path.join(platformRoot, 'app/src/main/java');
-    if (fs.existsSync(javaSrcRoot)) {
-        try {
-            patchAdMobJava(javaSrcRoot);
-        } catch (e) {
-            console.error('AdMobNativeHelp: Error patching AdMob.java: ' + e.message);
-        }
     }
 
     /*

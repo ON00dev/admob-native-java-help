@@ -2,19 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.0.8] - 2026-02-04
-
-### Validated
-- **Full Architecture Validation**: Verified and confirmed that the plugin correctly installs, configures `AdMobLauncher` as the entry point, and does not modify `MainActivity.java`, resolving all "illegal start of expression" and code structure errors.
-- **Robust Manifest Handling**: Confirmed `fix-manifest.js` correctly handles `MainActivity` (preserving it while removing LAUNCHER category) and cleans up duplicate `AdActivity`/`APPLICATION_ID` entries.
-- **Deprecated Method Fix**: Verified the auto-patching of `MobileAds.getVersionString()` works correctly during installation.
-
-## [2.0.7] - 2026-02-01
-
-### Fixed
-- **Manifest Stability**: `fix-manifest.js` now preserves the original `MainActivity` declaration (resolving build errors in projects that require it) but removes its `LAUNCHER` intent filter, ensuring `AdMobLauncher` remains the correct entry point.
-- **Dependency Patch**: Added logic to automatically patch `AdMob.java` (from `admob-plus-cordova` dependency) to replace the deprecated `MobileAds.getVersionString()` with `MobileAds.getVersion().toString()`, fixing build errors with newer Google Mobile Ads SDKs.
-
 ## [2.0.6] - 2026-02-01
 
 ### Fixed
