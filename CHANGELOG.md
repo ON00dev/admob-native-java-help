@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.10] - 2026-02-05
+### Fixed
+- **Manifest Merger**: Add `xmlns:tools="http://schemas.android.com/tools"` to `<manifest>` tag to resolve "The prefix 'tools' is not bound" build error.
+
+## [2.0.9] - 2026-02-05
+### Added
+- **AdMob.java Patch**: Patch `AdMob.java` from `admob-plus-cordova` to replace deprecated `MobileAds.getVersionString()` with fixed "20.6.0" (SDK 23.0.0 fix).
+- **Dynamic Launcher**: Create `AdMobLauncher.java` in the correct package path dynamically to avoid ClassNotFoundException.
+
+### Fixed
+- **Manifest Merger**: Clean duplicate `MainActivity` and `AdActivity` entries to avoid conflicts.
+- **Manifest Merger**: Clean duplicate `APPLICATION_ID` entries.
+- **Clean Architecture**: Remove redundant `config-file` injections from `plugin.xml`.
+
 ## [2.0.6] - 2026-02-01
 
 ### Fixed

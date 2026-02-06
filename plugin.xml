@@ -1,5 +1,5 @@
 <plugin id="admob-native-java-help"
-        version="2.0.6"
+        version="2.0.10"
         xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -51,14 +51,7 @@
     </config-file>
 
     <!-- Application ID metadata removed: handled by admob-plus-cordova -->
-    <!--
-    <config-file target="AndroidManifest.xml" parent="application">
-      <meta-data
-          android:name="com.google.android.gms.ads.APPLICATION_ID"
-          android:value="$APP_ID" />
-    </config-file>
-    -->
-
+    
     <source-file
         src="src/android/java/com/admob/nativehelp/AdMobCordovaActivity.java"
         target-dir="app/src/main/java/com/admob/nativehelp" />

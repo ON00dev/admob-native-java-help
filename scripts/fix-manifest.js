@@ -54,6 +54,26 @@ module.exports = function(context) {
 
     let manifestContent = fs.readFileSync(manifestPath, 'utf8');
 
+    // 1. Ensure xmlns:tools is present in <manifest> tag
+    // This is required if any plugin (including this one's dependencies) uses tools:replace or other tools attributes.
+    // Without this namespace declaration, the build fails with "The prefix 'tools' is not bound".
+    if (!manifestContent.includes('xmlns:tools="http://schemas.android.com/tools"')) {
+        console.log('AdMobNativeHelp: Adding xmlns:tools="http://schemas.android.com/tools" to manifest.');
+        // We look for the first <manifest ...> tag and inject the attribute
+        // Using regex to handle attributes spanning multiple lines
+        manifestContent = manifestContent.replace(/<manifest/i, '<manifest xmlns:tools="http://schemas.android.com/tools"');
+        // We mark modified later if we actually write the file, but we should track it here.
+        // However, the original logic sets `modified = false` further down.
+        // We will need to ensure `modified` is initialized to true here, or handle it carefully.
+        // Let's rely on the `modified` flag initialized below.
+        // Actually, we should just write it immediately or track a separate flag? 
+        // The script initializes `let modified = false` later at line 85.
+        // We need to move `let modified = false;` up or handle this correctly.
+        // To be safe and minimally invasive, we'll just carry this modification into the variable later.
+        // But wait, `let modified = false` is declared at line 85 (in original file context).
+        // If we modify manifestContent here (line 55 area), we need to ensure it gets written.
+    }
+
     // 2. Create AdMobLauncher.java in the app's package
     const packagePath = packageName.replace(/\./g, '/');
     const launcherDir = path.join(platformRoot, 'app/src/main/java', packagePath);
@@ -83,6 +103,12 @@ public class AdMobLauncher extends AdMobCordovaActivity {
 
     // 3. Update AndroidManifest.xml to use AdMobLauncher instead of MainActivity
     let modified = false;
+
+    // Check if we modified manifestContent in step 1 (adding xmlns:tools)
+    if (manifestContent.includes('xmlns:tools="http://schemas.android.com/tools"') && 
+        !fs.readFileSync(manifestPath, 'utf8').includes('xmlns:tools="http://schemas.android.com/tools"')) {
+        modified = true;
+    }
 
     // Remove old MainActivity block
     // We match standard Cordova MainActivity definition
@@ -192,5 +218,55 @@ public class AdMobLauncher extends AdMobCordovaActivity {
         console.log('AdMobNativeHelp: AndroidManifest.xml updated successfully.');
     } else {
         console.log('AdMobNativeHelp: AndroidManifest.xml already up to date.');
+    }
+
+    // 6. Patch AdMob.java (Fix for SDK 23.0.0 deprecation)
+    // We need to find AdMob.java in the platform source.
+    
+    function findFile(dir, filename) {
+        if (!fs.existsSync(dir)) return null;
+        try {
+            const files = fs.readdirSync(dir);
+            for (const file of files) {
+                const fullPath = path.join(dir, file);
+                const stat = fs.statSync(fullPath);
+                if (stat.isDirectory()) {
+                    const found = findFile(fullPath, filename);
+                    if (found) return found;
+                } else if (file === filename) {
+                    return fullPath;
+                }
+            }
+        } catch (e) {
+            console.error('Error searching in ' + dir, e);
+        }
+        return null;
+    }
+
+    const srcRoot = path.join(platformRoot, 'app/src/main/java');
+    const admobJavaPath = findFile(srcRoot, 'AdMob.java');
+
+    if (admobJavaPath) {
+         let admobContent = fs.readFileSync(admobJavaPath, 'utf8');
+         // Check for the specific deprecated call: put("version", MobileAds.getVersionString());
+         // We use a flexible regex to catch spacing variations
+         const deprecatedRegex = /put\s*\(\s*"version"\s*,\s*MobileAds\.getVersionString\(\)\s*\)\s*;/;
+         
+         if (deprecatedRegex.test(admobContent)) {
+             console.log('AdMobNativeHelp: Patching AdMob.java for SDK 23.0.0 compatibility (getVersionString -> "20.6.0")...');
+             admobContent = admobContent.replace(deprecatedRegex, 'put("version", "20.6.0");');
+             fs.writeFileSync(admobJavaPath, admobContent, 'utf8');
+         } else {
+             // Check if already patched to avoid noise
+             if (admobContent.includes('put("version", "20.6.0");')) {
+                 console.log('AdMobNativeHelp: AdMob.java is already patched.');
+             } else {
+                // If the file exists but doesn't match the regex or the fixed string, it might be a different version or structure.
+                // We'll leave it alone to be safe.
+                // console.log('AdMobNativeHelp: Could not find MobileAds.getVersionString() call in AdMob.java to patch.');
+             }
+         }
+    } else {
+        console.log('AdMobNativeHelp: AdMob.java not found in ' + srcRoot + '. Skipping patch.');
     }
 };
