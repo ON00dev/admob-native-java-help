@@ -53,6 +53,7 @@ module.exports = function(context) {
     console.log('AdMobNativeHelp: Detected package name: ' + packageName);
 
     let manifestContent = fs.readFileSync(manifestPath, 'utf8');
+    let modified = false;
 
     // 1. Ensure xmlns:tools is present in <manifest> tag
     // This is required if any plugin (including this one's dependencies) uses tools:replace or other tools attributes.
@@ -60,18 +61,8 @@ module.exports = function(context) {
     if (!manifestContent.includes('xmlns:tools="http://schemas.android.com/tools"')) {
         console.log('AdMobNativeHelp: Adding xmlns:tools="http://schemas.android.com/tools" to manifest.');
         // We look for the first <manifest ...> tag and inject the attribute
-        // Using regex to handle attributes spanning multiple lines
         manifestContent = manifestContent.replace(/<manifest/i, '<manifest xmlns:tools="http://schemas.android.com/tools"');
-        // We mark modified later if we actually write the file, but we should track it here.
-        // However, the original logic sets `modified = false` further down.
-        // We will need to ensure `modified` is initialized to true here, or handle it carefully.
-        // Let's rely on the `modified` flag initialized below.
-        // Actually, we should just write it immediately or track a separate flag? 
-        // The script initializes `let modified = false` later at line 85.
-        // We need to move `let modified = false;` up or handle this correctly.
-        // To be safe and minimally invasive, we'll just carry this modification into the variable later.
-        // But wait, `let modified = false` is declared at line 85 (in original file context).
-        // If we modify manifestContent here (line 55 area), we need to ensure it gets written.
+        modified = true;
     }
 
     // 2. Create AdMobLauncher.java in the app's package
@@ -82,7 +73,7 @@ module.exports = function(context) {
     }
     const launcherPath = path.join(launcherDir, 'AdMobLauncher.java');
     
-    // We verify if file exists to avoid overwriting if not needed, but for safety we overwrite to ensure correct content
+    // We verify if file exists and content matches to avoid unnecessary overwrites
     const launcherCode = `package ${packageName};
 
 import com.admob.nativehelp.AdMobCordovaActivity;
@@ -92,8 +83,20 @@ public class AdMobLauncher extends AdMobCordovaActivity {
     // Inherits everything from AdMobCordovaActivity
 }
 `;
-    fs.writeFileSync(launcherPath, launcherCode, 'utf8');
-    console.log('AdMobNativeHelp: Created AdMobLauncher.java at ' + launcherPath);
+    let shouldWriteLauncher = true;
+    if (fs.existsSync(launcherPath)) {
+        const currentContent = fs.readFileSync(launcherPath, 'utf8');
+        if (currentContent === launcherCode) {
+            shouldWriteLauncher = false;
+        }
+    }
+
+    if (shouldWriteLauncher) {
+        fs.writeFileSync(launcherPath, launcherCode, 'utf8');
+        console.log('AdMobNativeHelp: Created/Updated AdMobLauncher.java at ' + launcherPath);
+    } else {
+        console.log('AdMobNativeHelp: AdMobLauncher.java is up to date.');
+    }
 
     // 2.5 Ensure DummyActivity.java exists in plugin source (Cordova Requirement)
     // Cordova's build script sometimes checks for a class extending CordovaActivity in the source path.
@@ -102,13 +105,6 @@ public class AdMobLauncher extends AdMobCordovaActivity {
     // This step is just a logic placeholder confirming we are aware of the requirement.
 
     // 3. Update AndroidManifest.xml to use AdMobLauncher instead of MainActivity
-    let modified = false;
-
-    // Check if we modified manifestContent in step 1 (adding xmlns:tools)
-    if (manifestContent.includes('xmlns:tools="http://schemas.android.com/tools"') && 
-        !fs.readFileSync(manifestPath, 'utf8').includes('xmlns:tools="http://schemas.android.com/tools"')) {
-        modified = true;
-    }
 
     // Remove old MainActivity block
     // We match standard Cordova MainActivity definition
@@ -134,8 +130,11 @@ public class AdMobLauncher extends AdMobCordovaActivity {
     }
 
     // Add AdMobLauncher block if not present AND not already defined by another plugin (checking name="AdMobLauncher")
-    // Note: We already removed our own previous injections with oldAdMobRegex, but let's be extra safe.
-    if (!manifestContent.includes('android:name="AdMobLauncher"') && !manifestContent.includes('android:name=".AdMobLauncher"')) {
+    // We check for both "AdMobLauncher" and ".AdMobLauncher" and "com...AdMobLauncher" to be safe.
+    // Using a regex to detect any android:name ending in AdMobLauncher
+    const launcherExistsRegex = /android:name="[\w\.]*AdMobLauncher"/;
+    
+    if (!launcherExistsRegex.test(manifestContent)) {
         console.log('AdMobNativeHelp: Adding AdMobLauncher block.');
         
         // We add it just before </application>
@@ -155,6 +154,8 @@ public class AdMobLauncher extends AdMobCordovaActivity {
             manifestContent = manifestContent.replace('</application>', launcherActivity + '\n    </application>');
             modified = true;
         }
+    } else {
+        console.log('AdMobNativeHelp: AdMobLauncher block already present in manifest.');
     }
 
     // 4. Fix Duplicate APPLICATION_ID meta-data (Manifest Merger Failure Fix)

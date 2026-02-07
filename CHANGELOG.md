@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.12] - 2026-02-06
+### Fixed
+- **Build Error**: Explicitly create `gma_ad_services_config.xml` in `res/xml/` to resolve `AAPT: error: resource ... not found`.
+- **Manifest**: Add `xmlns:tools` to `<manifest>` tag to prevent "prefix 'tools' is not bound" errors.
+- **Cleanup**: Improved `AdMobLauncher` duplicate detection to avoid warnings.
+- **Optimization**: Avoid overwriting `AdMobLauncher.java` if content is identical.
+
 ## [2.0.11] - 2026-02-05
 ### Fixed
 - **Missing Resource**: Automatically create `gma_ad_services_config.xml` in `res/xml/` if missing, preventing "resource not found" build errors.
