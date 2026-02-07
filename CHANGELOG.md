@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.11] - 2026-02-05
+### Fixed
+- **Missing Resource**: Automatically create `gma_ad_services_config.xml` in `res/xml/` if missing, preventing "resource not found" build errors.
+- **Manifest Merger**: Improved `AdMobLauncher` injection check to prevent duplication if the activity is already present (e.g. added by another hook).
+
 ## [2.0.10] - 2026-02-05
 ### Fixed
 - **Manifest Merger**: Add `xmlns:tools="http://schemas.android.com/tools"` to `<manifest>` tag to resolve "The prefix 'tools' is not bound" build error.

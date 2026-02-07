@@ -133,8 +133,9 @@ public class AdMobLauncher extends AdMobCordovaActivity {
          modified = true;
     }
 
-    // Add AdMobLauncher block if not present
-    if (!manifestContent.includes('android:name="AdMobLauncher"')) {
+    // Add AdMobLauncher block if not present AND not already defined by another plugin (checking name="AdMobLauncher")
+    // Note: We already removed our own previous injections with oldAdMobRegex, but let's be extra safe.
+    if (!manifestContent.includes('android:name="AdMobLauncher"') && !manifestContent.includes('android:name=".AdMobLauncher"')) {
         console.log('AdMobNativeHelp: Adding AdMobLauncher block.');
         
         // We add it just before </application>
@@ -220,7 +221,26 @@ public class AdMobLauncher extends AdMobCordovaActivity {
         console.log('AdMobNativeHelp: AndroidManifest.xml already up to date.');
     }
 
-    // 6. Patch AdMob.java (Fix for SDK 23.0.0 deprecation)
+    // 6. Ensure gma_ad_services_config.xml exists (Android 13+ requirement)
+    // Some plugins insert <property android:name="android.adservices.AD_SERVICES_CONFIG" android:resource="@xml/gma_ad_services_config" />
+    // but fail to create the resource file, causing "resource xml/gma_ad_services_config not found".
+    const resXmlDir = path.join(platformRoot, 'app/src/main/res/xml');
+    if (!fs.existsSync(resXmlDir)) {
+        fs.mkdirSync(resXmlDir, { recursive: true });
+    }
+    const gmaConfigPath = path.join(resXmlDir, 'gma_ad_services_config.xml');
+    if (!fs.existsSync(gmaConfigPath)) {
+        console.log('AdMobNativeHelp: Creating missing gma_ad_services_config.xml to fix build error.');
+        const gmaContent = `<?xml version="1.0" encoding="utf-8"?>
+<ad-services-config>
+    <attribution-allow-list>
+        <package-name>com.google.android.gms</package-name>
+    </attribution-allow-list>
+</ad-services-config>`;
+        fs.writeFileSync(gmaConfigPath, gmaContent, 'utf8');
+    }
+
+    // 7. Patch AdMob.java (Fix for SDK 23.0.0 deprecation)
     // We need to find AdMob.java in the platform source.
     
     function findFile(dir, filename) {
