@@ -55,16 +55,6 @@ module.exports = function(context) {
     let manifestContent = fs.readFileSync(manifestPath, 'utf8');
     let modified = false;
 
-    // 1. Ensure xmlns:tools is present in <manifest> tag
-    // This is required if any plugin (including this one's dependencies) uses tools:replace or other tools attributes.
-    // Without this namespace declaration, the build fails with "The prefix 'tools' is not bound".
-    if (!manifestContent.includes('xmlns:tools="http://schemas.android.com/tools"')) {
-        console.log('AdMobNativeHelp: Adding xmlns:tools="http://schemas.android.com/tools" to manifest.');
-        // We look for the first <manifest ...> tag and inject the attribute
-        manifestContent = manifestContent.replace(/<manifest/i, '<manifest xmlns:tools="http://schemas.android.com/tools"');
-        modified = true;
-    }
-
     // 2. Create AdMobLauncher.java in the app's package
     const packagePath = packageName.replace(/\./g, '/');
     const launcherDir = path.join(platformRoot, 'app/src/main/java', packagePath);
@@ -107,8 +97,8 @@ public class AdMobLauncher extends AdMobCordovaActivity {
     // 3. Update AndroidManifest.xml to use AdMobLauncher instead of MainActivity
 
     // Remove old MainActivity block
-    // We match standard Cordova MainActivity definition
-    const mainActivityRegex = /<activity[^>]*android:name="MainActivity"[^>]*>[\s\S]*?<\/activity>/;
+    // We match standard Cordova MainActivity definition (both block and self-closing)
+    const mainActivityRegex = /<activity[^>]*android:name="MainActivity"[^>]*>[\s\S]*?<\/activity>|<activity[^>]*android:name="MainActivity"[^>]*\/>/g;
     if (mainActivityRegex.test(manifestContent)) {
         console.log('AdMobNativeHelp: Removing MainActivity block.');
         manifestContent = manifestContent.replace(mainActivityRegex, '');
@@ -206,6 +196,17 @@ public class AdMobLauncher extends AdMobCordovaActivity {
         modified = true;
     }
 
+    // 6. Fix AD_SERVICES_CONFIG property missing resource error
+    // If a dependency injects android.adservices.AD_SERVICES_CONFIG but the XML resource is missing, the build fails.
+    // Since SDK 23.0.0+ handles this internally or doesn't strictly require it for basic usage,
+    // we remove this property if it points to the missing 'gma_ad_services_config' resource.
+    const adServicesConfigRegex = /<property\s+[^>]*android:name="android\.adservices\.AD_SERVICES_CONFIG"[^>]*\/>/g;
+    if (adServicesConfigRegex.test(manifestContent)) {
+        console.log('AdMobNativeHelp: Removing AD_SERVICES_CONFIG property to prevent "resource not found" errors.');
+        manifestContent = manifestContent.replace(adServicesConfigRegex, '');
+        modified = true;
+    }
+
     /*
     if (!process.env.APP_ID) {
         throw new Error(
@@ -223,23 +224,8 @@ public class AdMobLauncher extends AdMobCordovaActivity {
     }
 
     // 6. Ensure gma_ad_services_config.xml exists (Android 13+ requirement)
-    // Some plugins insert <property android:name="android.adservices.AD_SERVICES_CONFIG" android:resource="@xml/gma_ad_services_config" />
-    // but fail to create the resource file, causing "resource xml/gma_ad_services_config not found".
-    const resXmlDir = path.join(platformRoot, 'app/src/main/res/xml');
-    if (!fs.existsSync(resXmlDir)) {
-        fs.mkdirSync(resXmlDir, { recursive: true });
-    }
-    const gmaConfigPath = path.join(resXmlDir, 'gma_ad_services_config.xml');
-    if (!fs.existsSync(gmaConfigPath)) {
-        console.log('AdMobNativeHelp: Creating missing gma_ad_services_config.xml to fix build error.');
-        const gmaContent = `<?xml version="1.0" encoding="utf-8"?>
-<ad-services-config>
-    <attribution-allow-list>
-        <package-name>com.google.android.gms</package-name>
-    </attribution-allow-list>
-</ad-services-config>`;
-        fs.writeFileSync(gmaConfigPath, gmaContent, 'utf8');
-    }
+    // Handled by <resource-file> in plugin.xml now.
+    // The previous manual creation logic has been removed to rely on Cordova's resource management.
 
     // 7. Patch AdMob.java (Fix for SDK 23.0.0 deprecation)
     // We need to find AdMob.java in the platform source.
@@ -274,12 +260,12 @@ public class AdMobLauncher extends AdMobCordovaActivity {
          const deprecatedRegex = /put\s*\(\s*"version"\s*,\s*MobileAds\.getVersionString\(\)\s*\)\s*;/;
          
          if (deprecatedRegex.test(admobContent)) {
-             console.log('AdMobNativeHelp: Patching AdMob.java for SDK 23.0.0 compatibility (getVersionString -> "20.6.0")...');
-             admobContent = admobContent.replace(deprecatedRegex, 'put("version", "20.6.0");');
+             console.log('AdMobNativeHelp: Patching AdMob.java for SDK 23.0.0 compatibility (getVersionString -> "23.0.0")...');
+             admobContent = admobContent.replace(deprecatedRegex, 'put("version", "23.0.0");');
              fs.writeFileSync(admobJavaPath, admobContent, 'utf8');
          } else {
              // Check if already patched to avoid noise
-             if (admobContent.includes('put("version", "20.6.0");')) {
+             if (admobContent.includes('put("version", "23.0.0");')) {
                  console.log('AdMobNativeHelp: AdMob.java is already patched.');
              } else {
                 // If the file exists but doesn't match the regex or the fixed string, it might be a different version or structure.

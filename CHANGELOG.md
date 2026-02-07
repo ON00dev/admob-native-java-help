@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.20] - 2026-02-06
+### Changed
+- **SDK Compatibility**: Updated the `AdMob.java` patcher to replace the deprecated `MobileAds.getVersionString()` with a hardcoded string `"23.0.0"` (instead of `"20.6.0"`), aligning with the latest SDK requirements.
+
+## [2.0.19] - 2026-02-06
+### Fixed
+- **AdMobLauncher Injection**: Moved `AdMobLauncher` activity definition to `plugin.xml` (using `<config-file>`) instead of relying solely on the `after_prepare` hook. This ensures the activity is always present in the manifest, preventing "Cannot read properties of null (reading 'attrib')" errors during deployment.
+- **MainActivity Cleanup**: Improved regex to handle self-closing `MainActivity` tags, ensuring duplicate launchers are properly removed.
+
+## [2.0.18] - 2026-02-06
+### Removed
+- **Manifest Cleanup**: Removed automatic injection of `xmlns:tools` namespace to restore cleaner manifest behavior similar to v2.0.6. The plugin now focuses solely on fixing `AdMobLauncher`, `APPLICATION_ID` duplication, and removing unwanted `AD_SERVICES_CONFIG` properties.
+
+## [2.0.17] - 2026-02-06
+### Fixed
+- **Manifest Cleanup**: Added script logic to actively remove `<property android:name="android.adservices.AD_SERVICES_CONFIG">` from `AndroidManifest.xml`. This prevents "resource not found" errors when dependencies inject this property but the referenced XML file is missing.
+
+## [2.0.16] - 2026-02-06
+### Removed
+- **GMA Config**: Removed `gma_ad_services_config.xml` and the corresponding `<property android:name="android.adservices.AD_SERVICES_CONFIG">` from the manifest. This simplifies the plugin and avoids build errors related to missing resources, as the file is only required if the property is present.
+
+## [2.0.15] - 2026-02-06
+### Fixed
+- **Resource Path**: Updated `<resource-file>` target to `app/src/main/res/xml/gma_ad_services_config.xml` to correctly match modern Cordova Android project structure (Android 13+), ensuring AAPT finds the file.
+
+## [2.0.14] - 2026-02-06
+### Fixed
+- **Resource Error (Final Fix)**: Switched to using Cordova's native `<resource-file>` mechanism to copy `gma_ad_services_config.xml`. This ensures the file is copied at the correct build phase, resolving timing issues where the file was missing during resource compilation.
+
+## [2.0.13] - 2026-02-06
+### Fixed
+- **Resource Error**: Updated `gma_ad_services_config.xml` generation logic to force creation/update with correct attributes (`allowAdImpressionAttribution`, `allowAdConversionAttribution`) in the correct path, definitively fixing the `resource ... not found` error.
+
 ## [2.0.12] - 2026-02-06
 ### Fixed
 - **Build Error**: Explicitly create `gma_ad_services_config.xml` in `res/xml/` to resolve `AAPT: error: resource ... not found`.
